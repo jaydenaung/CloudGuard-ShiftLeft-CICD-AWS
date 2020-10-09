@@ -93,7 +93,7 @@ Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. 
 - Then you'll need to do `git init`, `git add -A`, `git commit -m "Your message"` and `git push`
 - All the above files should now be uploaded to your CodeCommit repo.
 
-> You can also download [shiftleft-binary.zip(https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/shiftleft-binary.zip) for shiftleft executables for Windows,Linux and MacOs.
+> You can also download [shiftleft-binary.zip](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/shiftleft-binary.zip) for shiftleft executables for Windows,Linux and MacOs.
 
 ### CLOUDGUARD API KEY AND SECRET
 
