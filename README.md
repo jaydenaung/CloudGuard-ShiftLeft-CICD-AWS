@@ -191,7 +191,7 @@ In CodeBuild windows, do the following;
 ![header image](img/codebuild-2.png)
 
 
-8. Choose "Standard" & "Standard:3.0" (It's totally up to you to choose actually. But this setting works for Nodejs 12.x apps)
+8. Choose "Standard" & "Standard:4.0" (It's totally up to you to choose actually.)
 9. Check "Privileged ...." checkbox
 10. Choose an existing role or create a new service role.
 
