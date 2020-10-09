@@ -1,15 +1,17 @@
-# CloudGuard integration with CICD pipeline on AWS using CodePipeline
+# CloudGuard SHIFTLEFT integration with CICD pipeline on AWS
 
-Docker images 
+Docker images often contains vulnerabilities that can allow an attacker to take advantage when the application is at runtime. It's crutial for DevOps engineers to ensure that the security is integrated into CICD Pipeline.
 
-In this tutorial, I'll do a step-by-step walk-through of integrating CloudGuard SHIFTLEFT into your CICD PipeLine on AWS. The integration will happen at the build stage. C
+In this tutorial, I'll do a step-by-step walk-through of integrating CloudGuard SHIFTLEFT into your CICD PipeLine on AWS. The integration will happen at the build stage. 
 
-This Github repo contains source code (zip) of a sample docker image.
+NOTE: This tutorial is **not complete** yet and it is work in progress.
+
 
 # Pre-requisites
  You need the following tools on your computer:
 
 * AWS CLI [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html).
+* Docker (If you want to test local Docker build)
 
 Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services provided by **AWS ONLY**. However, CloudGuard can be integrated with any other automation tools that can create CICD pipeline.
 
@@ -20,9 +22,8 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 
 ### AWS IAM Roles needed for the following AWS services
 
-The role(s) will be created as part of creating a codepipeline. Please take note that the role used by codebulid requires permission to access to a number of AWS resources such as S3. 
+The role(s) will be created as part of creating a CodeBuild project. Please take note that the role used by codebulid requires permission to access to a number of AWS resources such as S3. 
 
-* CodeBuild
 
 - For CodeBuild Role, two additional policies need to be attached to it on top of of the policies that were attahed when it was created.
 
@@ -48,15 +49,13 @@ The role(s) will be created as part of creating a codepipeline. Please take note
 
 In this tutorial, we'll be doing the followings;
 
-1. Create AWS ECR repo \
+1. Create an AWS ECR repo \
 (Yes if you'd like to follow along my ALL-AWS tutorial, you'll need to create a ECR repo which will store the docker image.)
 2. Create a CodeCommit Repo
 3. Create a Codebuild Project
 4. Test the Codebuild with SHIFTLEFT
 
-
-
-## 1. Create a ECR Repository
+## 1. Create an AWS ECR Repository
 First you'll need to create a ECR on AWS. Your docker image (after build stage) will be stored in the ECR repo.
 
 You can create the ECR repo on AWS web console or you can just execute the following command.
@@ -71,15 +70,15 @@ aws ecr create-repository --repository-name project-a/Your-App
 
 ## 2. Create a CodeCommit Repository
 
-Then you'll need to create a CodeCommit on AWS. We need the CodeCommit repo to store the "source" files that we will build into a docker image. 
+Then you'll need to create a CodeCommit repo on AWS. We need the CodeCommit repo to store the "source" files that we will build into a docker image later. And the Docker Image will then be stored in the ECR repo.
 
- You can do it on AWS web console or you can just execute the following command.
+ You can create a CodeCommit repo on AWS web console or you can just execute the following command.
 
 ```bash
 aws codecommit create-repository --repository-name my-docker-repo --repository-description "My Docker Repo"
 ```
 
-Then you'll need to do 'git clone your codepipline repo' via either SSH or HTTP.  It'll be an empty repository first. Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
+Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP.  It'll be an empty repository first. Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
 
 - Unzip the source files. You'll need to **make sure that "src" folder and Dockerfile are in the same root directory**.
 - Remove the zip file 
@@ -167,7 +166,7 @@ artifacts:
 ```
 
 
-# 3. Create a Codebuild Project
+# 3. Create a CodeBuild Project
 
 On AWS Console;
 
@@ -373,17 +372,18 @@ latest: digest: sha256:a46642efce16bbed3015725bfd40cbabb2115529ceb0e0a0430ca44b7
 [Container] 2020/10/09 08:14:29 Found 1 file(s)
 
 ```
+Check out that the build has been compeleted.
 
-Finally, you can check and verify that SHIFTLEFT has
+![header image](img/buildcomplete.png)
+
+Finally, you can check and verify that SHIFTLEFT has been integrated into your build stage of the CICD pipeline.
 
 
 ## 4. Check the SHIFTLEFT scan result
 
 On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT.
 
- 
-
-
+**NOTE**
 A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you should can view the scan result.
 
 ## A Sample Scan Result (Excerpt)
@@ -452,15 +452,12 @@ Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/s
  
 
 
-
 ![header image](img/cloudguard.png) 
 
 ## Resources
 
-1. [Check Point CloudGuard Workload Protection](https://www.checkpoint.com/products/workload-protection/#:~:text=CloudGuard%20Workload%20Protection%2C%20part%20of,automating%20security%20with%20minimal%20overhead.)
+1. [CloudGuard SHIFTLEFT](https://github.com/dome9/shiftleft)
 
-2. [CloudGuard SHIFTLEFT](https://github.com/dome9/protego-examples)
-
-3. Here is another good tutorial you might want to check out - [CloudGuard integration with Jenkins by Dean Houari](https://github.com/chkp-dhouari/AWSCICD-CLOUDGUARD)
+2. Here is another good tutorial you might want to check out - [CloudGuard integration with Jenkins by Dean Houari](https://github.com/chkp-dhouari/CloudGuard-ShiftLeft-CICD)
 
 
