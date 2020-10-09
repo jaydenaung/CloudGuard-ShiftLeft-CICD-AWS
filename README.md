@@ -27,7 +27,7 @@ The role(s) will be created as part of creating a codepipeline. Please take note
 - For CodeBuild Role, two additional policies need to be attached to it on top of of the policies that were attahed when it was created.
 
 1. AmazonEC2ContainerRegistryPowerUser 
-2. Inline Policy that allows it to "PUT OBJECT" to S3 Bucket. This is for uploading scan result to S3. (See JSON below)
+2. An Inline Policy that allows it to "PUT OBJECT" to S3 Bucket. This is for uploading scan result to S3. (See JSON below)
 
 ```
 {
@@ -81,7 +81,7 @@ Then you'll need to do 'git clone your codepipline repo' via either SSH or HTTP.
 
 - Unzip the source files. You'll need to **make sure that "src" folder and Dockerfile are in the same root directory**.
 - Remove the zip file 
-- Download the buildspec.yml 
+- Download the Dockerfile & buildspec.yml 
 
 **So in your CodeCommit local dirctory, you should have the following folder and files**.
 
@@ -95,10 +95,10 @@ Then you'll need to do 'git clone your codepipline repo' via either SSH or HTTP.
 
 ### CLOUDGUARD API KEY AND SECRET
 
-SHIFTLEFT requires CloudGuard's API key and API secrets. In build stage, we'll need to export it in buildspec.yml. You can generate CloudGuard API key and API secrets on CloudGuard console. 
+SHIFTLEFT requires CloudGuard's API key and API secrets. In Build stage, we'll need to export it in buildspec.yml. You can generate CloudGuard API key and API secrets on CloudGuard console. 
 
 ### S3 Bucket
-You'll also need to create an S3 bucket to store a vulnerability scan result.
+You'll also need to create an S3 bucket to uplaod and store a copy of SHIFTLEFT vulnerability scan result.
 
 ```bash
 aws s3 mb s3://Your-Bucket-Name
@@ -107,7 +107,7 @@ aws s3 mb s3://Your-Bucket-Name
 
 ## [buildspec.yml](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/buildspec.yml)
 
-Buildspec.yml instructs CodeBuild in build stage in terms of what to do. buildspec.yml will instruct AWS CodeBuild to scan the docker image for vulnerability during build stage. So this an important configuration file. 
+Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basically, buildspec.yml will instruct AWS CodeBuild to automatically scan the docker image for vulnerability during build stage. So this an important configuration file. 
 
 **[IMPORTANT]** In the buildspec.yml, look for #UPDATE comment and replace the values with your own values accordingly.
 
@@ -167,6 +167,14 @@ artifacts:
 
 # 3. Create a Codebuild Project
 
+
+![header image](img/codebuild-1.png)
+
+
+![header image](img/codebuild-2.png)
+
+
+![header image](img/codebuild-3.png)
 
 ### CodeBuild Output
 
@@ -346,7 +354,7 @@ Finally, you can check and verify that SHIFTLEFT has
 
 On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT.
 
-![header image](img/aws-lambda-function-layer.png) 
+ 
 
 
 A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you should can view the scan result.
