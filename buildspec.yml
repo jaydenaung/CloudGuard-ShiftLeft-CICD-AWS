@@ -36,13 +36,14 @@ phases:
     - echo Starting scan at `date`
     # UPDATE the saved tar file with your docker image name 
     - ./shiftleft image-scan -i Your-DOCKER-IAMGE.tar > result.txt || if [ "$?" = "6" ]; then exit 0; fi
+    - echo Scan finished at `date`
      
   post_build: 
     commands: 
-    - echo Build completed on `date` 
     - echo Pushing image to repo
     # UPDATE the following line with the URI of your own ECR repository
     - docker push ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest 
+    - echo Build completed at `date` 
 
 artifacts: 
   files:
