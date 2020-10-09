@@ -200,6 +200,14 @@ In CodeBuild windows, do the following;
 
 ![header image](img/codebuild-3.png)
 
+
+And Finally:
+
+11. Ensure that you've configured "Artifacts" (THIS IS IMPORTANT)
+12. Define the S3 Bucket that you've created earlier
+13. Define a folder (e.g. output)
+
+![header image](img/artifacts.png)
 Now your Codebuild project has been created. You can **"Start the Build"**. 
 
 ### CodeBuild Output
