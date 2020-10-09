@@ -65,7 +65,9 @@ You can create the ECR repo on AWS web console or you can just execute the follo
 aws ecr create-repository --repository-name project-a/Your-App
 ```
 
-**Take note of the Docker Image URI!**
+**Take note of the Docker Image URI!You will need it later**
+
+![header image](img/ecr-uri.png)        
 
 ## 2. Create a CodeCommit Repository
 
@@ -171,6 +173,11 @@ On AWS Console;
 
 1. Go to "CodeBuild" 
 2. If you don't already have a codebuild project, choose "Create Project".
+3. Add "CodeCommit" as source
+4. Choose the CodeCommit repot that you've created earlier.
+
+
+![header image](img/codebuild-source.png)
 
 
 ![header image](img/codebuild-1.png)
@@ -435,17 +442,14 @@ Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/s
 
 **Congratulations!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
 
-![header image](img/cloudguard-1.png) 
+![header image](img/cloudguard.png) 
 
 
 ## Issues
 
-1. One of the issues you might probably encounter in Build is the build stage might fail due to IAM insufficient permissions. Ensure that the IAM role has the following additional policies attached to it
+1. One of the issues you might probably encounter in Build is the build stage might fail due to IAM insufficient permissions. Ensure that the IAM role has the sufficient permissions attached to it
+ 
 
-1. ECR 
-2. S3 Put Bucket 
-
-2. Make sure that all required software & dependencies are installed. (e.g. AWS CLI.
 
 
 ![header image](img/cloudguard.png) 

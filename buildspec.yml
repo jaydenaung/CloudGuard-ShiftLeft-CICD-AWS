@@ -17,29 +17,31 @@ phases:
   build: 
     commands: 
     - echo Downloading SHIFTLEFT
+    # UPDATE
     - export CHKP_CLOUDGUARD_ID=YOUR-CLOUDGUARD-ID
+    # UPDATE
     - export CHKP_CLOUDGUARD_SECRET=YOUR-SECRET
     - wget https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft
     - chmod -R +x ./shiftleft
     - echo Build started on `date` 
     - echo Building the Docker image... 
-    # update the following line with the name of your own ECR repository
+    # UPDATE the following line with the name of your own ECR repository
     - docker build -t your-docker-image .
-    # update the following line with the URI of your own ECR repository (view the Push Commands in the console)
+    # UPDATE the following line with the URI of your own ECR repository (view the Push Commands in the console)
     - docker tag YOUR-DOCKER-IMAGE:latest ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest
     #Saving the docker image in tar
     - echo Saving Docker image 
     - docker save cyberave-docker -o Your-DOCKER-IAMGE.tar
     # Start Scan
     - echo Starting scan at `date`
-    # Update the saved tar file with your docker image name 
+    # UPDATE the saved tar file with your docker image name 
     - ./shiftleft image-scan -i Your-DOCKER-IAMGE.tar > result.txt || if [ "$?" = "6" ]; then exit 0; fi
      
   post_build: 
     commands: 
     - echo Build completed on `date` 
     - echo Pushing image to repo
-    # update the following line with the URI of your own ECR repository
+    # UPDATE the following line with the URI of your own ECR repository
     - docker push ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest 
 
 artifacts: 
