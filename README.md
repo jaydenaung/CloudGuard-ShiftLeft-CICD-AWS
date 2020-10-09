@@ -210,7 +210,8 @@ And Finally:
 ![header image](img/artifacts.png)
 
 # START THE BUILD!
-Now your Codebuild project has been created. You can **"Start the Build"** and observe the build log and output.
+
+Now your Codebuild project has been created. You can go to your CodeBuild Project, **"Start the Build"** and observe the build log and output.
 
 ### CodeBuild Output
 
