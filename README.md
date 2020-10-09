@@ -284,8 +284,8 @@ Build completed on Fri Oct 9 08:14:25 UTC 2020
 [Container] 2020/10/09 08:14:25 Running command echo Pushing image to repo
 Pushing image to repo
 
-[Container] 2020/10/09 08:14:25 Running command docker push 116489363094.dkr.ecr.ap-southeast-1.amazonaws.com/cyberave-docker:latest
-The push refers to repository [116489363094.dkr.ecr.ap-southeast-1.amazonaws.com/cyberave-docker]
+[Container] 2020/10/09 08:14:25 Running command docker push 123456789.dkr.ecr.ap-southeast-1.amazonaws.com/cyberave-docker:latest
+The push refers to repository [123456789.dkr.ecr.ap-southeast-1.amazonaws.com/cyberave-docker]
 98d3c49f13ab: Preparing
 96fd7149e6a8: Preparing
 5c008103b520: Preparing
