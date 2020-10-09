@@ -45,6 +45,8 @@ You can create the ECR repo on AWS web console or you can just execute the follo
 aws ecr create-repository --repository-name project-a/Your-App
 ```
 
+**Take note of the Docker Image URI!**
+
 ## 2. Create a CodeCommit Repository
 
 Then you'll need to create a CodeCommit on AWS. We need the CodeCommit repo to store the "source" files that we will build into a docker image. 
@@ -85,10 +87,9 @@ aws s3 mb s3://Your-Bucket-Name
 
 ## [buildspec.yml](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/buildspec.yml)
 
-Buildspec.yml instructs CodeBuild in build stage in terms of what to do. buildspec.yml will instruct AWS CodeBuild to scan the docker image for vulnerability during build stage. So this an important configuration file. In the buildspec.yml, replace the following values with your own values (without []):
+Buildspec.yml instructs CodeBuild in build stage in terms of what to do. buildspec.yml will instruct AWS CodeBuild to scan the docker image for vulnerability during build stage. So this an important configuration file. 
 
-1. CHKP_CLOUDGUARD_ID=[YOUR-CLOUDGUARD-ID]
-2. CHKP_CLOUDGUARD_SECRET=[YOUR-SECRET]
+**[IMPORTANT]** In the buildspec.yml, look for #UPDATE comment and replace the values with your own values accordingly.
 
 
 ```
@@ -111,15 +112,17 @@ phases:
   build: 
     commands: 
     - echo Downloading SHIFTLEFT
+    #UPDATE
     - export CHKP_CLOUDGUARD_ID=YOUR-CLOUDGUARD-ID
+     # UPDATE
     - export CHKP_CLOUDGUARD_SECRET=YOUR-SECRET
     - wget https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft
     - chmod -R +x ./shiftleft
     - echo Build started on `date` 
     - echo Building the Docker image... 
-    # update the following line with the name of your own ECR repository
+    # UPDATE the following line with the name of your own ECR repository
     - docker build -t your-docker-image .
-    # update the following line with the URI of your own ECR repository (view the Push Commands in the console)
+    # UPDATE the following line with the URI of your own ECR repository (view the Push Commands in the console)
     - docker tag YOUR-DOCKER-IMAGE:latest ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest
     #Saving the docker image in tar
     - echo Saving Docker image 
@@ -133,7 +136,7 @@ phases:
     commands: 
     - echo Build completed on `date` 
     - echo Pushing image to repo
-    # update the following line with the URI of your own ECR repository
+    # UPDATE the following line with the URI of your own ECR repository
     - docker push ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest 
 
 artifacts: 
@@ -328,6 +331,61 @@ On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as
 
 A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you should can view the scan result.
 
+## A Sample Scan Result (Excerpt)
+
+```
+		  CVEs Findings:
+			- ID: CVE-2018-21232
+			Description: re2c before 2.0 has uncontrolled recursion that causes stack consumption in find_fixed_tags.
+			Severity: MEDIUM
+			Last Modified: 2020-05-14T12:15:00Z
+		- ncurses-base  6.1+20181013-2+deb10u2
+		  Severity: MEDIUM
+		  Line: 3524
+		  CVEs Findings:
+			- ID: CVE-2019-17594
+			Description: There is a heap-based buffer over-read in the _nc_find_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.
+			Severity: MEDIUM
+			Last Modified: 2019-12-26T15:35:00Z
+			- ID: CVE-2019-17595
+			Description: There is a heap-based buffer over-read in the fmt_entry function in tinfo/comp_hash.c in the terminfo library in ncurses before 6.1-20191012.
+			Severity: MEDIUM
+			Last Modified: 2019-12-23T19:26:00Z
+		- libbrotli1  1.0.7-2
+		  Severity: MEDIUM
+		  Line: 1350
+		  CVEs Findings:
+			- ID: CVE-2020-8927
+			Description: A buffer overflow exists in the Brotli library versions prior to 1.0.8 where an attacker controlling the input length of a "one-shot" decompression request to a script can trigger a crash, which happens when copying over chunks of data larger than 2 GiB. It is recommended to update your Brotli library to 1.0.8 or later. If one cannot update, we recommend to use the "streaming" API as opposed to the "one-shot" API, and impose chunk size limits.
+			Severity: MEDIUM
+			Last Modified: 2020-09-30T18:15:00Z
+		- util-linux  2.33.1-0.1
+		  Severity: UNKNOWN
+		  Line: 3899
+		  CVEs Findings:
+			- ID: CVE-2007-5191
+			Description: mount and umount in util-linux and loop-aes-utils call the setuid and setgid functions in the wrong order and do not check the return values, which might allow attackers to gain privileges via helpers such as mount.nfs.
+			Severity: UNKNOWN
+			Last Modified: 2018-10-15T21:41:00Z
+			- ID: CVE-2001-1494
+			Description: script command in the util-linux package before 2.11n allows local users to overwrite arbitrary files by setting a hardlink from the typescript log file to any file on the system, then having root execute the script command.
+			Severity: UNKNOWN
+			Last Modified: 2017-10-11T01:29:00Z
+		- m4  1.4.18-2
+		  Severity: UNKNOWN
+		  Line: 3407
+		  CVEs Findings:
+			- ID: CVE-2008-1688
+			Description: Unspecified vulnerability in GNU m4 before 1.4.11 might allow context-dependent attackers to execute arbitrary code, related to improper handling of filenames specified with the -F option.  NOTE: it is not clear when this issue crosses privilege boundaries.
+			Severity: UNKNOWN
+			Last Modified: 2017-08-08T01:30:00Z
+			- ID: CVE-2008-1687
+			Description: The (1) maketemp and (2) mkstemp builtin functions in GNU m4 before 1.4.11 do not quote their output when a file is created, which might allow context-dependent attackers to trigger a macro expansion, leading to unspecified use of an incorrect filename.
+			Severity: UNKNOWN
+			Last Modified: 2017-08-08T01:30:00Z
+Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/scan/image/35cad561b8968f02ac5a2eabcderdfdkfndkfndk 
+```
+
 **Congratulations!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
 
 ![header image](img/cloudguard-1.png) 
@@ -349,8 +407,8 @@ A copy of the result has been sent to Check Point Infinity Portal. If you have a
 
 1. [Check Point CloudGuard Workload Protection](https://www.checkpoint.com/products/workload-protection/#:~:text=CloudGuard%20Workload%20Protection%2C%20part%20of,automating%20security%20with%20minimal%20overhead.)
 
-2. [CloudGuard Workload (Protego) Examples](https://github.com/dome9/protego-examples)
+2. [CloudGuard SHIFTLEFT](https://github.com/dome9/protego-examples)
 
-3. Here is another good tutorial you might want to check out - [CloudGuard integration with AWS Pipeline by Dean Houari](https://github.com/chkp-dhouari/AWSCICD-CLOUDGUARD)
+3. Here is another good tutorial you might want to check out - [CloudGuard integration with Jenkins by Dean Houari](https://github.com/chkp-dhouari/AWSCICD-CLOUDGUARD)
 
 
