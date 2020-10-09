@@ -167,14 +167,33 @@ artifacts:
 
 # 3. Create a Codebuild Project
 
+On AWS Console;
+
+1. Go to "CodeBuild" 
+2. If you don't already have a codebuild project, choose "Create Project".
+
 
 ![header image](img/codebuild-1.png)
 
 
+In CodeBuild windows, do the following;
+
+1. Enter your project name
+2. Choose "Managed Image" and "Ubuntu" as Operating system
+
 ![header image](img/codebuild-2.png)
 
 
+3. Choose "Standard" & "Standard:3.0" (It's totally up to you to choose actually. But this setting works for Nodejs 12.x apps)
+4. Check "Privileged ...." checkbox
+5. Choose an existing role or create a new service role.
+
+
+> Now, please take note that codebuild role requires permissions to access a number of AWS services including Lambda, Cloudformation template and IAM. You will encounter issues while CodeBuild is building the app.
+
 ![header image](img/codebuild-3.png)
+
+Now your Codebuild project has been created. You can **"Start the Build"**. 
 
 ### CodeBuild Output
 
