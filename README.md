@@ -1,8 +1,8 @@
 # CloudGuard SHIFTLEFT integration with CICD pipeline on AWS
 
-Docker images often contains vulnerabilities that can allow an attacker to take advantage when the application is at runtime. It's crutial for DevOps engineers to ensure that the security is integrated into CICD Pipeline.
+Docker images often contains vulnerabilities that can allow an attacker to leverage when the application is at runtime - in both test and production environments. It's crutial for DevOps engineers to ensure that the security is integrated into CICD Pipeline.
 
-In this tutorial, I'll do a step-by-step walk-through of integrating CloudGuard SHIFTLEFT into your CICD PipeLine on AWS. The integration will happen at the build stage. 
+In this tutorial, I'll do a step-by-step walk-through of integrating CloudGuard SHIFTLEFT into your CICD Pipeline on AWS. The integration will happen at the build stage. 
 
 NOTE: This tutorial is **not complete** yet and it is work in progress.
 
