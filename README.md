@@ -19,10 +19,30 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 * Access to Check Point Infinity portal (For now, the scan result can be viewed only on Infinity portal. Hopefully, we'll make it available on CloudGuard console soon.)
 
 ### AWS IAM Roles needed for the following AWS services
-* CodeCommit
+
+The role(s) will be created as part of creating a codepipeline. Please take note that the role used by codebulid requires permission to access to a number of AWS resources such as S3. 
+
 * CodeBuild
 
-The roles will be created as part of creating a codepipeline. Please take note that the role used by codebulid requires permission to access to a number of AWS resources such as S3. 
+- For CodeBuild Role, two additional policies need to be attached to it on top of of the policies that were attahed when it was created.
+
+1. AmazonEC2ContainerRegistryPowerUser 
+2. Inline Policy that allows it to "PUT OBJECT" to S3 Bucket. This is for uploading scan result to S3. (See JSON below)
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "s3:PutObject",
+            "Resource": "*"
+        }
+    ]
+}
+```
+
 
 # What exactly we will be doing
 
