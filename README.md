@@ -468,5 +468,3 @@ Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/s
 1. [CloudGuard SHIFTLEFT](https://github.com/dome9/shiftleft)
 
 2. Here is another good tutorial you might want to check out - [CloudGuard integration with Jenkins by Dean Houari](https://github.com/chkp-dhouari/CloudGuard-ShiftLeft-CICD)
-
-
