@@ -94,6 +94,8 @@ Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. 
 
 > You can also download [shiftleft-binary.zip](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/shiftleft-binary.zip) for shiftleft executables for Windows,Linux and MacOs.
 
+[Check out the how SHIFTLEFT works and command line usage here.](https://github.com/dome9/shiftleft)
+
 ### CLOUDGUARD API KEY AND SECRET
 
 SHIFTLEFT requires CloudGuard's API key and API secrets. In Build stage, we'll need to export it in buildspec.yml. You can generate CloudGuard API key and API secrets on CloudGuard console. 
