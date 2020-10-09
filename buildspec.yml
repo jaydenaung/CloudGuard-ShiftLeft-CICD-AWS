@@ -1,0 +1,48 @@
+version: 0.2  
+ 
+phases: 
+  install:
+    runtime-versions:
+        docker: 18     
+    commands: 
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  
+  pre_build: 
+    commands: 
+    - echo Logging in to Amazon ECR.... 
+    - aws --version
+    # update the following line with your own region
+    - $(aws ecr get-login --no-include-email --region ap-southeast-1) 
+  build: 
+    commands: 
+    - echo Downloading SHIFTLEFT
+    - export CHKP_CLOUDGUARD_ID=YOUR-CLOUDGUARD-ID
+    - export CHKP_CLOUDGUARD_SECRET=YOUR-SECRET
+    - wget https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft
+    - chmod -R +x ./shiftleft
+    - echo Build started on `date` 
+    - echo Building the Docker image... 
+    # update the following line with the name of your own ECR repository
+    - docker build -t your-docker-image .
+    # update the following line with the URI of your own ECR repository (view the Push Commands in the console)
+    - docker tag YOUR-DOCKER-IMAGE:latest ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest
+    #Saving the docker image in tar
+    - echo Saving Docker image 
+    - docker save cyberave-docker -o Your-DOCKER-IAMGE.tar
+    # Start Scan
+    - echo Starting scan at `date`
+    # Update the saved tar file with your docker image name 
+    - ./shiftleft image-scan -i Your-DOCKER-IAMGE.tar > result.txt || if [ "$?" = "6" ]; then exit 0; fi
+     
+  post_build: 
+    commands: 
+    - echo Build completed on `date` 
+    - echo Pushing image to repo
+    # update the following line with the URI of your own ECR repository
+    - docker push ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest 
+
+artifacts: 
+  files:
+    - result.txt
+    

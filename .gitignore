@@ -33,3 +33,5 @@ imagescan.sh
 *.tfvars
 *.x
 .vscode/settings.json
+*.crt
+*.key
