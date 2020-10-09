@@ -208,7 +208,9 @@ And Finally:
 13. Define a folder (e.g. output)
 
 ![header image](img/artifacts.png)
-Now your Codebuild project has been created. You can **"Start the Build"**. 
+
+# START THE BUILD!
+Now your Codebuild project has been created. You can **"Start the Build"** and observe the build log and output.
 
 ### CodeBuild Output
 
