@@ -441,16 +441,13 @@ A copy of the result has been sent to Check Point Infinity Portal. If you have a
 Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/scan/image/35cad561b8968f02ac5a2eabcderdfdkfndkfndk 
 ```
 
-**Congratulations!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
-
-![header image](img/cloudguard.png) 
+**Congratulations!!!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
 
 
 ## Issues
 
 1. One of the issues you might probably encounter in Build is the build stage might fail due to IAM insufficient permissions. Ensure that the IAM role has the sufficient permissions attached to it
  
-
 
 ![header image](img/cloudguard.png) 
 
