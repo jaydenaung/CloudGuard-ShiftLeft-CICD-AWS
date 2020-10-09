@@ -33,13 +33,12 @@ The roles will be created as part of creating a codepipeline. Please take note t
 In this tutorial, we'll be doing the followings;
 
 1. Create AWS ECR repo \
-(Yes if you'd like to follow along my ALL-AWS tutorial, you'll need to create a ECR repo which will be used as a source code. 
+(Yes if you'd like to follow along my ALL-AWS tutorial, you'll need to create a ECR repo which will store the docker image.)
 2. Create a CodeCommit Repo
 3. Create a Codebuild Project
 4. Test the Codebuild with SHIFTLEFT
 5. Create CodePipeline
 6. Test Your CodePipeline - Observe that any change in the codecommit repo will trigger the pipeline, and in the build stage, CloudGuard will be enabled and integrated to the serverless application
-
 
 
 ## 1. Create a ECR Repository
@@ -61,32 +60,26 @@ Then you'll need to create a CodeCommit on AWS. We need the CodeCommit repo to s
 aws codecommit create-repository --repository-name my-docker-repo --repository-description "My Docker Repo"
 ```
 
-Then you'll need to do 'git clone your codepipline reop' via either SSH or HTTP.  It'll be an empty repository first. Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/cloudguard-serverless-cicd-codepipeline/blob/master/dev-serverless.zip) 
+Then you'll need to do 'git clone your codepipline reop' via either SSH or HTTP.  It'll be an empty repository first. Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
 
-- Unzip the source files (It will create a folder. You'll need to **move the files from that folder to root directory**.)
-- Remove the zip file (and the empty folder.)
+- Unzip the source files. You'll need to **make sure that "src" folder and Dockerfile are in the same root directory**.
+- Remove the zip file 
+- Download the buildspec.yml 
 
-- Download the following files **from this GitHub repo to your CodeCommit local directory**.
+**So in your CodeCommit local dirctory, you should have the following folder and files**.
 
-1. buildspec.yml
+1. src (directory where source codes are)
 2. Dockerfile
-3. Sample_App.zip
-
+3. buildspec.yml (This file isn't need for Docker image however, it is required to CodeBuild)
 
 - Then you'll need to do `git init`, `git add -A`, `git commit -m "Your message"` and `git push`
+- All the above files should now be uploaded to your CodeCommit repo.
 
-You should see the following files and folders in your **CodeCommit Repo**. 
 
-```bash
-$ ls
-README.md              node_modules           template.yml
-__tests__              cloudguard-config.json    
-buildspec.yml          my-pipeline.json       package.json           src
-$
 ``` 
 ### CLOUDGUARD API KEY AND SECRET
 
-You need to take note of CloudGuard's API key and API secrets. In build stage, this file will be used by CloudGuard for authentication purpose. You can generate CloudGuard API key and API secrets on CloudGuard console. 
+SHIFTLEFT requires CloudGuard's API key and API secrets. In build stage, we'll need to export it in buildspec.yml. You can generate CloudGuard API key and API secrets on CloudGuard console. 
 
 ### S3 Bucket
 You'll also need to create an S3 bucket to store a vulnerability scan result.
@@ -96,94 +89,7 @@ aws s3 mb s3://Your-Bucket-Name
 ```
 
 
-### 2. Deploy a sample serverless application [sam_deploy.sh](https://github.com/jaydenaung/cloudguard-serverless-cicd-codepipeline/blob/master/sam_deploy.sh)
-
-Now is the time to deploy your serverless application. We'll be deploying a very simple nodejs Lambda function which just works for this lab. However, you can deploy ANY serverless application. The CloudGuard integration will work as long as you follow the instructions. You can either use SAM command line to deploy or download the sam_deploy.sh script from this git repo to your local directory, and just execute it. sam_deploy.sh is a simple script I developed for ease of deployment. **Please take note that this script will only work if you have SAM CLI installed, and only on Linux/MacOS.** [If you're on Windows](#If-you-are-on-Windows), execute the two SAM commands which I'll show you after the script output. You will need to execute the script in the root directory (the one with template.yml in it), and it will ask for the following:
-
-1. Your S3 Bucket Name (The one that you've just created.)
-2. Your Cloudformation Stack name 
-
-```bash
-./sam_deploy.sh
-```
-
-Expected output:
-
-```
-./sam_deploy.sh
-Enter S3 Bucket Name: chkp-jayden-serverless-apps-source
-Enter Your CFT Stack Name: chkp-jayden-dev-serverless-app
-[Task 1] Packaging your serverless application based on template.yml
-Uploading to c3e4be0a0b3cbe688e90f2b571a38f47  373 / 373.0  (100.00%)
-
-Successfully packaged artifacts and wrote output template to file out.yml.
-Execute the following command to deploy the packaged template
-sam deploy --template-file /Users/jaydenaung/git/serverless/dev-serverless-repo/out.yml --stack-name <YOUR STACK NAME>
-
-[Task 2] Deploying your application now..
-
-	Deploying with following values
-	===============================
-	Stack name                 : chkp-jayden-dev-serverless-app
-	Region                     : None
-	Confirm changeset          : False
-	Deployment s3 bucket       : None
-	Capabilities               : ["CAPABILITY_IAM"]
-	Parameter overrides        : {}
-
-Initiating deployment
-=====================
-
-Waiting for changeset to be created..
-
-CloudFormation stack changeset
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Operation                                                 LogicalResourceId                                         ResourceType                                            
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+ Add                                                     helloFromLambdaFunctionRole                               AWS::IAM::Role                                          
-+ Add                                                     helloFromLambdaFunction                                   AWS::Lambda::Function                                   
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-Changeset created successfully. arn:aws:cloudformation:ap-southeast-1:116489363094:changeSet/samcli-deploy1601635751/a1274a36-42d3-4225-b021-cb3c1fc5d839
-
-
-2020-10-02 18:49:22 - Waiting for stack create/update to complete
-
-CloudFormation events from changeset
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-ResourceStatus                             ResourceType                               LogicalResourceId                          ResourceStatusReason                     
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE_IN_PROGRESS                         AWS::IAM::Role                             helloFromLambdaFunctionRole                -                                        
-CREATE_IN_PROGRESS                         AWS::IAM::Role                             helloFromLambdaFunctionRole                Resource creation Initiated              
-CREATE_COMPLETE                            AWS::IAM::Role                             helloFromLambdaFunctionRole                -                                        
-CREATE_IN_PROGRESS                         AWS::Lambda::Function                      helloFromLambdaFunction                    -                                        
-CREATE_IN_PROGRESS                         AWS::Lambda::Function                      helloFromLambdaFunction                    Resource creation Initiated              
-CREATE_COMPLETE                            AWS::Lambda::Function                      helloFromLambdaFunction                    -                                        
-CREATE_COMPLETE                            AWS::CloudFormation::Stack                 chkp-jayden-dev-serverless-app             -                                        
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-Successfully created/updated stack - chkp-jayden-dev-serverless-app in None
-
-Your serverless application has been deployed. Observe that there is "out.yml" now which was basically an output file of SAM package command used in the sam_deploy.sh script.
-```
-
-### If-you-are-on-Windows
-
-If you're on Windows, execute the following two command lines in the directory where template.yml is.
-
-```bash
-
-sam package --template-file template.yml --s3-bucket YOUR-BUCKET-NAME --output-template-file out.yml
-
-sam deploy --template-file ./out.yml --stack-name YOUR-CFT-STACK-NAME --capabilities CAPABILITY_IAM
-
-```
-
-Now that your cloudformation stack has been deployed, you also have a Lambda function which we will protect in this tutorial. (You can check out and test the Lambda function on AWS web console.)
-
-We'll need the ARN of the cloudformation stack as well. Go to AWS Web Console => Cloudformation => Stacks, and take note the ARN of the stack that has just been created. (It looks like this:  arn:aws:cloudformation:ap-southeast-1:116489363094:stack/chkp-serverless-app/a6d77c70-048a-11eb-8438-02e7c9cae2dc)
-
-## [buildspec.yml](https://github.com/jaydenaung/cloudguard-serverless-cicd-codepipeline/blob/master/buildspec.yml)
+## [buildspec.yml](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/buildspec.yml)
 
 Buildspec.yml instructs CodeBuild in build stage in terms of what to do - things like adding Proact and FSP to the function. So this an important configuration file. In the buildspec.yml, replace the following values with your own values (without []):
 
