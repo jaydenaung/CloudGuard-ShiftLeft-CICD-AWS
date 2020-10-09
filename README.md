@@ -10,8 +10,6 @@ This Github repo contains source code (zip) of a sample docker image.
  You need the following tools on your computer:
 
 * AWS CLI [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html).
-* Docker
-
 
 Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services provided by **AWS ONLY**. However, CloudGuard can be integrated with any other automation tools that can create CICD pipeline.
 
@@ -20,11 +18,9 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 * AWS Account
 * Access to Check Point Infinity portal (For now, the scan result can be viewed only on Infinity portal. Hopefully, we'll make it available on CloudGuard console soon.)
 
-
+### AWS IAM Roles needed for the following AWS services
 * CodeCommit
 * CodeBuild
-* CodeDeploy
-* [CodePipeline](#CodePipeline)
 
 The roles will be created as part of creating a codepipeline. Please take note that the role used by codebulid requires permission to access to a number of AWS resources such as S3. 
 
@@ -37,8 +33,7 @@ In this tutorial, we'll be doing the followings;
 2. Create a CodeCommit Repo
 3. Create a Codebuild Project
 4. Test the Codebuild with SHIFTLEFT
-5. Create CodePipeline
-6. Test Your CodePipeline - Observe that any change in the codecommit repo will trigger the pipeline, and in the build stage, CloudGuard will be enabled and integrated to the serverless application
+
 
 
 ## 1. Create a ECR Repository
@@ -50,7 +45,7 @@ You can create the ECR repo on AWS web console or you can just execute the follo
 aws ecr create-repository --repository-name project-a/Your-App
 ```
 
-## 2. Createa CodeCommit Repository
+## 2. Create a CodeCommit Repository
 
 Then you'll need to create a CodeCommit on AWS. We need the CodeCommit repo to store the "source" files that we will build into a docker image. 
 
@@ -60,7 +55,7 @@ Then you'll need to create a CodeCommit on AWS. We need the CodeCommit repo to s
 aws codecommit create-repository --repository-name my-docker-repo --repository-description "My Docker Repo"
 ```
 
-Then you'll need to do 'git clone your codepipline reop' via either SSH or HTTP.  It'll be an empty repository first. Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
+Then you'll need to do 'git clone your codepipline repo' via either SSH or HTTP.  It'll be an empty repository first. Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
 
 - Unzip the source files. You'll need to **make sure that "src" folder and Dockerfile are in the same root directory**.
 - Remove the zip file 
@@ -70,13 +65,12 @@ Then you'll need to do 'git clone your codepipline reop' via either SSH or HTTP.
 
 1. src (directory where source codes are)
 2. Dockerfile
-3. buildspec.yml (This file isn't need for Docker image however, it is required to CodeBuild)
+3. buildspec.yml (This file isn't needed for Docker image however, it is required to CodeBuild)
 
 - Then you'll need to do `git init`, `git add -A`, `git commit -m "Your message"` and `git push`
 - All the above files should now be uploaded to your CodeCommit repo.
 
 
-``` 
 ### CLOUDGUARD API KEY AND SECRET
 
 SHIFTLEFT requires CloudGuard's API key and API secrets. In build stage, we'll need to export it in buildspec.yml. You can generate CloudGuard API key and API secrets on CloudGuard console. 
@@ -91,137 +85,65 @@ aws s3 mb s3://Your-Bucket-Name
 
 ## [buildspec.yml](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/buildspec.yml)
 
-Buildspec.yml instructs CodeBuild in build stage in terms of what to do - things like adding Proact and FSP to the function. So this an important configuration file. In the buildspec.yml, replace the following values with your own values (without []):
+Buildspec.yml instructs CodeBuild in build stage in terms of what to do. buildspec.yml will instruct AWS CodeBuild to scan the docker image for vulnerability during build stage. So this an important configuration file. In the buildspec.yml, replace the following values with your own values (without []):
 
-1. AWS_REGION=[Your REGION]
-2. S3_BUCKET=[YOUR BUCKET NAME]
-3. cloudguard fsp -c [The ARN of Your Cloudformation stack you just took note of]
+1. CHKP_CLOUDGUARD_ID=[YOUR-CLOUDGUARD-ID]
+2. CHKP_CLOUDGUARD_SECRET=[YOUR-SECRET]
+
 
 ```
-version: 0.2
-
-phases:
+version: 0.2  
+ 
+phases: 
   install:
-    commands:
-      # Install all dependencies (including dependencies for running tests)
-      - npm install
-      - pip install --upgrade awscli
-  pre_build:
-    commands:
-      ## Not required 
-  build:
-    commands:
-      - echo Build started on `date`
-      - npm install -g https://artifactory.app.protego.io/cloudguard-serverless-plugin.tgz
-      # Set your AWS region variable
-      - export AWS_REGION=ap-southeast-1
-      # Configure the CloudGuard Workload Proact security on the SAM template
-      - echo Enabling Proact
-      - cloudguard proact -m template.yml
-      # Set the S3 bucket name variable
-      - export S3_BUCKET=YOUR-BUCKET-NAME
-      # Use AWS SAM to package the application by using AWS CloudFormation
-      - echo Enabling FSP
-      - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
-      # Add the Function Runtime Protection (Or Function Self Protection) to your function. You need to replace cloudformation stack arn with the one you've deployed!
-      - cloudguard fsp -c arn:aws:cloudformation:YOUR-CFT-STACK-ARN
-artifacts:
-  type: zip
+    runtime-versions:
+        docker: 18     
+    commands: 
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  
+  pre_build: 
+    commands: 
+    - echo Logging in to Amazon ECR.... 
+    - aws --version
+    # update the following line with your own region
+    - $(aws ecr get-login --no-include-email --region ap-southeast-1) 
+  build: 
+    commands: 
+    - echo Downloading SHIFTLEFT
+    - export CHKP_CLOUDGUARD_ID=YOUR-CLOUDGUARD-ID
+    - export CHKP_CLOUDGUARD_SECRET=YOUR-SECRET
+    - wget https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft
+    - chmod -R +x ./shiftleft
+    - echo Build started on `date` 
+    - echo Building the Docker image... 
+    # update the following line with the name of your own ECR repository
+    - docker build -t your-docker-image .
+    # update the following line with the URI of your own ECR repository (view the Push Commands in the console)
+    - docker tag YOUR-DOCKER-IMAGE:latest ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest
+    #Saving the docker image in tar
+    - echo Saving Docker image 
+    - docker save cyberave-docker -o Your-DOCKER-IAMGE.tar
+    # Start Scan
+    - echo Starting scan at `date`
+    # Update the saved tar file with your docker image name 
+    - ./shiftleft image-scan -i Your-DOCKER-IAMGE.tar > result.txt || if [ "$?" = "6" ]; then exit 0; fi
+     
+  post_build: 
+    commands: 
+    - echo Build completed on `date` 
+    - echo Pushing image to repo
+    # update the following line with the URI of your own ECR repository
+    - docker push ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest 
+
+artifacts: 
   files:
-    - template-export.yml
+    - result.txt
 ```
 
-## 3. Create a CodePipeline
 
-It is time to create your CICD pipeline on AWS. Now if you're like me who likes to do things using CLI, you can create a CodePipeline and a CodeBuild project in just two command lines. You will need to just edit "codebuild-create-project.json" and "my-pipeline.json" which you can find in this repo, replace the values with your own values, and execute the following CLI.
+# 3. Create a Codebuild Project
 
-* Create a CodeBuild Project
-
-```bash
-aws codebuild create-project --cli-input-json file://codebuild-create-project.json
-```
-
-* Create CodePipeline 
-
-```bash
-aws codepipeline create-pipeline --cli-input-json file://my-pipeline.json
-```
-
-Otherwise, please follow the step-by-step guide to create a CodePipeline.
-
-### CodePipeline
-
-Let's create your CICD Pipeline on AWS console!
-
-1. Go to "CodePipeline" on AWS console
-2. Create Pipeline
-3. Enter your pipeline's name
-4. If you already have an existing role, choose it. Otherwise, create a new role.
-
-![header image](img/1-codepipeline-initial.png) 
-
-### CodePipeline - Source Stage
-Then we can add source - which is CodeCommit in this tutorial. You can add any source (e.g. Github)
-
-1. Choose "CodeCommit" (You can use Github or any code repo. If you're following along my tutorial, choose CodeCommit.)
-2. Choose Repository name - the CodeCommit repo that you've created earlier.
-3. Choose Master Branch
-4. For change detection, Choose "CloudWatch Events".
-
-![header image](img/2-codepipeline-source.png) 
-
-### CodePipeline - Build Stage
-This is the build stage and it's important. We need to first configure the build environment.
-
-1. Choose "CodeBuild" & choose your region.
-2. If you don't already have a codebuild project, choose "Create Project".
-
-
-![header image](img/3-codepipeline-build.png) 
-
-In CodeBuild windows, do the following;
-
-1. Enter your project name
-2. Choose "Managed Image" and "Ubuntu" as Operating system
-
-![header image](img/4-codepipeline-build-1.png) 
-
-3. Choose "Standard" & "Standard:3.0" (It's totally up to you to choose actually. But this setting works for Nodejs 12.x apps)
-4. Check "Privileged ...." checkbox
-5. Choose an existing role or create a new service role.
-
-
-> Now, please take note that codebuild role requires permissions to access a number of AWS services including Lambda, Cloudformation template and IAM. You will encounter issues while CodeBuild is building the app.
-
-
-![header image](img/5-codepipeline-build-2.png) 
-
-### CodePipeline - Deploy Stage 
-
-In Deploy stage, we'll have to do the following;
-
-1. Choose "Cloudformation" as Deploy Provider 
-2. Choose your region
-3. Action mode: "Create or update a stack" (You can also use ChangeSet)
-4. Stack Name: **Choose the CFT Stack that you've created for your Lambda function**
-5. As for Artifacts, Enter "result.txt".
-
-![header image](img/6-codepipeline-deploy.png) 
-
-![header image](img/7-codepipeline-deploy-2.png) 
-
-Now, your CodePipeline has been created! Once a pipeline is created, any change in your source code in AWS CodeCommit will trigger the pipeline process. In build stage, CloudGuard will protect the serverless application by enabling Proact, and FSP which will be added to the Lambda function as a layer. The code will be scanned for vulnerabilities and embedded credentials by Proact first, and then FSP will be enabled on the function for runtime protection. This process will happen every time a codepipline update is triggered. 
-
-## 5. Test your CodePipeline - Release Change
-
-Now that you've successfully created your CICD pipeline, any change to the Lambda code will trigger the pipeline at this point. So let's make some changes and monitor what happens. You can observe the "Build" stage and see that Proact and FSP have been enabled on the function.
-
-
-In your local CodeCommit repo, make **any change.** 
-
-- Then, commit and push it again. This will trigger the pipeline change. Then observe the activities on Pipeline on the AWS Console.
-
-![header image](img/codepipeline-status.png)
 
 ### CodeBuild Output
 
@@ -394,30 +316,31 @@ latest: digest: sha256:a46642efce16bbed3015725bfd40cbabb2115529ceb0e0a0430ca44b7
 
 ```
 
-Finally, you can check and verify that each stage of your CodePipline has been successfully completed!
+Finally, you can check and verify that SHIFTLEFT has
 
 
-![header image](img/8-codepipeline-succeded.png) 
+## 4. Check the SHIFTLEFT scan result
 
-## 6. Verification of CloudGuard protection
-
-On AWS Console, go to "Lambda", and the function that we've enabled the protection on. Verify that a layer has been added to the function.
+On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT.
 
 ![header image](img/aws-lambda-function-layer.png) 
 
 
-You can log on to your CloudGuard console, and go to the Serverless module or Protected Assets. Check your Lambda function.
+A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you should can view the scan result.
 
-**Congratulations!** You've successfully integrated CloudGuard SHIFTLEFT protection into CICD pipeline on AWS!
+**Congratulations!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
 
 ![header image](img/cloudguard-1.png) 
 
 
 ## Issues
 
-1. One of the issues you might probably encounter in CodePipeline is the build stage might fail due to IAM insufficient permissions. Double check that sufficient IAM permissions are given to the role.
+1. One of the issues you might probably encounter in Build is the build stage might fail due to IAM insufficient permissions. Ensure that the IAM role has the following additional policies attached to it
 
-2. Make sure that all required software & dependencies are installed. (e.g. AWS CLI, SAM, Nodejs) Otherwise, scipts like sam_deploy.sh won't run.
+1. ECR 
+2. S3 Put Bucket 
+
+2. Make sure that all required software & dependencies are installed. (e.g. AWS CLI.
 
 
 ![header image](img/cloudguard.png) 
