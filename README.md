@@ -1,6 +1,6 @@
 # CloudGuard SHIFTLEFT integration with CICD pipeline on AWS
 
-Docker images often contains vulnerabilities that can allow an attacker to leverage when the application is at runtime - in both test and production environments. It's crutial for DevOps engineers to ensure that the security is integrated into CICD Pipeline.
+Docker images often contain vulnerabilities that can allow an attacker to leverage when the application is at runtime - in both test and production environments. It's crutial for DevOps engineers to ensure that the security is integrated into CICD Pipeline for your cloud native applications. Check Point's CloudGuard SHIFTLEFT is a security tool that can integrate into your CICD pipeline, and scan your containers for vulnerabilities. 
 
 In this tutorial, I'll do a step-by-step walk-through of integrating CloudGuard SHIFTLEFT into your CICD Pipeline on AWS. The integration will happen at the build stage. 
 
@@ -392,7 +392,7 @@ Finally, you can check and verify that SHIFTLEFT has been integrated into your b
 
 ## 4. Check the SHIFTLEFT scan result
 
-On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT.
+On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT. 
 
 **NOTE**
 A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you should can view the scan result.
