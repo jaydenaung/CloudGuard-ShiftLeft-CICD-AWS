@@ -44,7 +44,6 @@ The role(s) will be created as part of creating a CodeBuild project. Please take
 }
 ```
 
-
 # What exactly we will be doing
 
 In this tutorial, we'll be doing the followings;
