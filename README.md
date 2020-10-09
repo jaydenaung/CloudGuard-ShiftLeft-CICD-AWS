@@ -173,27 +173,28 @@ On AWS Console;
 
 1. Go to "CodeBuild" 
 2. If you don't already have a codebuild project, choose "Create Project".
-3. Add "CodeCommit" as source
-4. Choose the CodeCommit repot that you've created earlier.
-
-
-![header image](img/codebuild-source.png)
 
 
 ![header image](img/codebuild-1.png)
 
+3. Add "CodeCommit" as source
+4. Choose the CodeCommit repot that you've created earlier.
+5. Choose "Master" branch
+
+![header image](img/codebuild-source.png)
+
 
 In CodeBuild windows, do the following;
 
-1. Enter your project name
-2. Choose "Managed Image" and "Ubuntu" as Operating system
+6. Enter your project name
+7. Choose "Managed Image" and "Ubuntu" as Operating system
 
 ![header image](img/codebuild-2.png)
 
 
-3. Choose "Standard" & "Standard:3.0" (It's totally up to you to choose actually. But this setting works for Nodejs 12.x apps)
-4. Check "Privileged ...." checkbox
-5. Choose an existing role or create a new service role.
+8. Choose "Standard" & "Standard:3.0" (It's totally up to you to choose actually. But this setting works for Nodejs 12.x apps)
+9. Check "Privileged ...." checkbox
+10. Choose an existing role or create a new service role.
 
 
 > Now, please take note that codebuild role requires permissions to access a number of AWS services including Lambda, Cloudformation template and IAM. You will encounter issues while CodeBuild is building the app.
