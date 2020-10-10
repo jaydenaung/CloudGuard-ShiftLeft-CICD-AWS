@@ -207,9 +207,9 @@ In CodeBuild windows, do the following;
 
 And Finally:
 
-11. Ensure that you've configured "Artifacts" (THIS IS IMPORTANT)
-12. Define the S3 Bucket that you've created earlier
-13. Define a folder (e.g. output)
+11. Ensure that you configure "Artifacts" **(THIS IS IMPORTANT)**
+12. Choose "S3" bucket  & In "Bucket Name", Enter the S3 Bucket that you've created earlier
+13. In "Name", Define a folder ***(e.g. output)***
 
 ![header image](img/artifacts.png)
 
