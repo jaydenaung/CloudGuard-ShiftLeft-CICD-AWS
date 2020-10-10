@@ -60,7 +60,7 @@ First you'll need to create a ECR on AWS. Your docker image (after build stage) 
 You can create the ECR repo on AWS web console or you can just execute the following command.
 
 ```bash
-aws ecr create-repository --repository-name project-a/Your-App
+aws ecr create-repository --repository-name project-a/my-docker
 ```
 
 **Take note of the Docker Image URI!You will need it later**
