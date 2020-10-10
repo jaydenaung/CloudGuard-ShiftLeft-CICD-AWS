@@ -150,7 +150,7 @@ phases:
     - docker tag YOUR-DOCKER-IMAGE:latest ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest
     #Saving the docker image in tar
     - echo Saving Docker image 
-    - docker save cyberave-docker -o Your-DOCKER-IAMGE.tar
+    - docker save chkp-docker -o Your-DOCKER-IAMGE.tar
     # Start Scan
     - echo Starting scan at `date`
     # Update the saved tar file with your docker image name 
@@ -269,22 +269,22 @@ Restarting Apache httpd web server: apache2AH00558: apache2: Could not reliably 
 Removing intermediate container 867053eb27be
  ---> 7fdfbf48c822
 Successfully built 7fdfbf48c822
-Successfully tagged cyberave-docker:latest
+Successfully tagged chkp-docker:latest
 
-[Container] 2020/10/09 08:12:08 Running command docker tag cyberave-docker:latest 116489363094.dkr.ecr.ap-southeast-1.amazonaws.com/cyberave-docker:latest
+[Container] 2020/10/09 08:12:08 Running command docker tag chkp-docker:latest 116489363094.dkr.ecr.ap-southeast-1.amazonaws.com/chkp-docker:latest
 
 [Container] 2020/10/09 08:12:08 Running command echo Saving Docker image
 Saving Docker image
 
-[Container] 2020/10/09 08:12:08 Running command docker save cyberave-docker -o cyberave-docker.tar
+[Container] 2020/10/09 08:12:08 Running command docker save chkp-docker -o chkp-docker.tar
 
 [Container] 2020/10/09 08:12:14 Running command echo Starting scan at `date`
 Starting scan at Fri Oct 9 08:12:14 UTC 2020
 
-[Container] 2020/10/09 08:12:14 Running command ./shiftleft image-scan -i cyberave-docker.tar > result.txt || if [ "$?" = "6" ]; then exit 0; fi
+[Container] 2020/10/09 08:12:14 Running command ./shiftleft image-scan -i chkp-docker.tar > result.txt || if [ "$?" = "6" ]; then exit 0; fi
 INFO   [09-10-2020 08:12:17.476] blade image-scan updated (0.0.130)           
 INFO   [09-10-2020 08:12:17.594] SourceGuard Scan Started!                    
-INFO   [09-10-2020 08:12:19.471] Project name: cyberave-docker path: /tmp/SourceGuard247824249 
+INFO   [09-10-2020 08:12:19.471] Project name: chkp-docker path: /tmp/SourceGuard247824249 
 INFO   [09-10-2020 08:12:19.471] Scan ID: 35cad561b8968f02ac5a2e0cb05b1b2fb417b756376dc04164ec5958908d23d8-SvBL8P 
 INFO   [09-10-2020 08:12:31.647] Scanning ...                                 
 INFO   [09-10-2020 08:12:48.892] Analyzing ...                                
@@ -298,8 +298,8 @@ Build completed on Fri Oct 9 08:14:25 UTC 2020
 [Container] 2020/10/09 08:14:25 Running command echo Pushing image to repo
 Pushing image to repo
 
-[Container] 2020/10/09 08:14:25 Running command docker push 123456789.dkr.ecr.ap-southeast-1.amazonaws.com/cyberave-docker:latest
-The push refers to repository [123456789.dkr.ecr.ap-southeast-1.amazonaws.com/cyberave-docker]
+[Container] 2020/10/09 08:14:25 Running command docker push 123456789.dkr.ecr.ap-southeast-1.amazonaws.com/chkp-docker:latest
+The push refers to repository [123456789.dkr.ecr.ap-southeast-1.amazonaws.com/chkp-docker]
 98d3c49f13ab: Preparing
 96fd7149e6a8: Preparing
 5c008103b520: Preparing
