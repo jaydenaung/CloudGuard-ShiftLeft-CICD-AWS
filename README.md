@@ -12,6 +12,7 @@ NOTE: This tutorial is **not complete** yet and it is work in progress.
 
 * AWS CLI [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html).
 * Docker (If you want to test local Docker build)
+* [SHIFTLEF](https://github.com/dome9/shiftleft)
 
 Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services provided by **AWS ONLY**. However, CloudGuard can be integrated with any other automation tools that can create CICD pipeline.
 
@@ -398,7 +399,7 @@ Finally, you can check and verify that SHIFTLEFT has been integrated into your b
 On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT. 
 
 **NOTE**
-A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you should can view the scan result.
+A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you should can view the scan result. You can see a number of vulnerabilities found in the docker image!
 
 ## A Sample Scan Result (Excerpt)
 

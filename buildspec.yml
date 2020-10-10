@@ -12,20 +12,20 @@ phases:
     commands: 
     - echo Logging in to Amazon ECR.... 
     - aws --version
-    # UPDATE the following line with your own region. Mine is ap-southeast-1
+    # UPDATE the following line with your own region.I'm in p-southeast-1 Region
     - $(aws ecr get-login --no-include-email --region ap-southeast-1) 
   build: 
     commands: 
     - echo Downloading SHIFTLEFT
-    # UPDATE
+    # UPDATE CLOUDGUARD API KEY
     - export CHKP_CLOUDGUARD_ID=YOUR-CLOUDGUARD-ID
-    # UPDATE
+    # UPDATE API SECRET
     - export CHKP_CLOUDGUARD_SECRET=YOUR-SECRET
     - wget https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft
     - chmod -R +x ./shiftleft
     - echo Build started on `date` 
     - echo Building the Docker image... 
-    # UPDATE the following line with the name of your own ECR repository
+    # UPDATE the following line with the name of your docker image
     - docker build -t your-docker-image .
     # UPDATE the following line with the URI of your own ECR repository (view the Push Commands in the console)
     - docker tag YOUR-DOCKER-IMAGE:latest ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest
@@ -41,7 +41,7 @@ phases:
   post_build: 
     commands: 
     - echo Pushing image to repo
-    # UPDATE the following line with the URI of your own ECR repository
+    # UPDATE the following push command with the URI of your own ECR repository
     - docker push ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest 
     - echo Build completed at `date` 
 
