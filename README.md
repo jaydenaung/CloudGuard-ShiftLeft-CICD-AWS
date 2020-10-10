@@ -101,7 +101,7 @@ Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. 
 SHIFTLEFT requires CloudGuard's API key and API secrets. In Build stage, we'll need to export it in buildspec.yml. You can generate CloudGuard API key and API secrets on CloudGuard console. 
 
 ### S3 Bucket
-You'll also need to create an S3 bucket to uplaod and store a copy of SHIFTLEFT vulnerability scan result.
+You'll also need to create an S3 bucket to upload and store a copy of SHIFTLEFT vulnerability scan result.
 
 ```bash
 aws s3 mb s3://Your-Bucket-Name
@@ -110,7 +110,7 @@ aws s3 mb s3://Your-Bucket-Name
 
 ## [buildspec.yml](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/buildspec.yml)
 
-Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basically, buildspec.yml will instruct AWS CodeBuild to automatically scan the docker image for vulnerability during build stage. So this an important configuration file. 
+Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basically, buildspec.yml will instruct AWS CodeBuild to automatically scan the docker image for vulnerability during build stage. So this an **important** configuration file. 
 
 **[IMPORTANT]** In the buildspec.yml, look for #UPDATE comments and replace the values with your own values accordingly.
 
@@ -199,7 +199,7 @@ In CodeBuild windows, do the following;
 10. Choose an existing role or create a new service role.
 
 
-> Now, please take note that codebuild role requires permissions to access a number of AWS services including Lambda, Cloudformation template and IAM. You will encounter issues while CodeBuild is building the app.
+> Now, please take note that codebuild role requires permissions to access to S3 bucket and ECR.
 
 ![header image](img/codebuild-3.png)
 

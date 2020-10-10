@@ -12,7 +12,7 @@ phases:
     commands: 
     - echo Logging in to Amazon ECR.... 
     - aws --version
-    # update the following line with your own region
+    # UPDATE the following line with your own region. Mine is ap-southeast-1
     - $(aws ecr get-login --no-include-email --region ap-southeast-1) 
   build: 
     commands: 
