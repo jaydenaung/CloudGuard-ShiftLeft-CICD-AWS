@@ -23,13 +23,12 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 
 ### AWS IAM Roles needed for the following AWS services
 
-The role(s) will be created as part of creating a CodeBuild project. Please take note that the role used by codebulid requires permission to access to a number of AWS resources such as S3. 
-
+- The IAM role(s) will be created as part of creating a CodeBuild project. Please take note that the role used by codebulid requires permission to access to a number of AWS resources such as S3. 
 
 - For CodeBuild Role, two additional policies need to be attached to it on top of the IAM policies that were attached when the role was created.
 
-1. AmazonEC2ContainerRegistryPowerUser 
-2. An Inline Policy that allows it to "PUT OBJECT" to S3 Bucket. This is for uploading scan result to S3. (See JSON below)
+    1. AmazonEC2ContainerRegistryPowerUser 
+    2. An Inline Policy that allows it to "PUT OBJECT" to S3 Bucket. This is for uploading scan result to S3. (See JSON below)
 
 ```
 {
@@ -70,7 +69,7 @@ aws ecr create-repository --repository-name project-a/Your-App
 
 ## 2. Create a CodeCommit Repository
 
-Then you'll need to create a CodeCommit repo on AWS. We need the CodeCommit repo to store the "source" files that we will build into a docker image later. And the Docker Image will then be stored in the ECR repo.
+Then you'll need to create a CodeCommit repo on AWS. We need the CodeCommit repo to store the "source" files that we will build into a docker image later in the tutorial. And the Docker image will then be uploaded to the ECR repo.
 
  You can create a CodeCommit repo on AWS web console or you can just execute the following command.
 
@@ -113,7 +112,7 @@ aws s3 mb s3://Your-Bucket-Name
 
 Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basically, buildspec.yml will instruct AWS CodeBuild to automatically scan the docker image for vulnerability during build stage. So this an **important** configuration file. 
 
-**[IMPORTANT]** In the buildspec.yml, look for #UPDATE comments and replace the values with your own values accordingly.
+**[IMPORTANT]** In the buildspec.yml, look for **#UPDATE** comments and replace the values with your own values accordingly.
 
 
 ```
@@ -396,10 +395,11 @@ Finally, you can check and verify that SHIFTLEFT has been integrated into your b
 
 ## 4. Check the SHIFTLEFT scan result
 
-On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT. 
+On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "Artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT. 
 
 **NOTE**
-A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you should can view the scan result. You can see a number of vulnerabilities found in the docker image!
+A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you can view the scan result on the portal. (Hopefully, this will be available on CloudGuard portal soon)
+Otherwise, in result.txt, you can see a number of vulnerabilities found in the docker image!
 
 ## A Sample Scan Result (Excerpt)
 
@@ -456,7 +456,7 @@ A copy of the result has been sent to Check Point Infinity Portal. If you have a
 Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/scan/image/35cad561b8968f02ac5a2eabcderdfdkfndkfndk 
 ```
 
-**Congratulations!!!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
+**CONGRATULATIONS!!!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
 
 
 ## Issues
