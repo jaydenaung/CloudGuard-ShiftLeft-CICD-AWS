@@ -110,7 +110,7 @@ aws s3 mb s3://Your-Bucket-Name
 
 ## [buildspec.yml](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/buildspec.yml)
 
-Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basically, buildspec.yml will instruct AWS CodeBuild to automatically scan the docker image for vulnerability during build stage. So this an **important** configuration file. 
+Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basically, buildspec.yml will instruct AWS CodeBuild to automatically scan the docker image for vulnerability during build stage. And AWS CodeBuild will follow the steps declared in the buildspec.yml file. So this an **important** configuration file. 
 
 **[IMPORTANT]** In the buildspec.yml, look for **#UPDATE** comments and replace the values with your own values accordingly.
 
@@ -180,7 +180,7 @@ On AWS Console;
 ![header image](img/codebuild-1.png)
 
 3. Add "CodeCommit" as source
-4. Choose the CodeCommit repot that you've created earlier.
+4. Choose the CodeCommit repo that you've created earlier.
 5. Choose "Master" branch
 
 ![header image](img/codebuild-source.png)
