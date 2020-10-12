@@ -23,26 +23,30 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 
 ### AWS IAM Roles needed for the following AWS services
 
-- The IAM role(s) will be created as part of creating a CodeBuild project. Please take note that the role used by codebulid requires permission to access to a number of AWS resources such as S3. 
+- The IAM role(s) will be created as part of creating a CodeBuild project. Please take note that the role used by CodeBulid requires permission to access to a number of AWS resources such as S3. 
 
 - For CodeBuild Role, two additional policies need to be attached to it on top of the IAM policies that were attached when the role was created.
 
     1. AmazonEC2ContainerRegistryPowerUser 
-    2. An Inline Policy that allows it to "PUT OBJECT" to S3 Bucket. This is for uploading scan result to S3. (See JSON below)
+    2. An Inline Policy that allows it to "PUT OBJECT" to S3 Bucket that you've created. This is for uploading scan result to S3. (See JSON below)
 
 ```
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": "s3:PutObject",
-            "Resource": "*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1602483338347",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::[YOUR-BUCKET-ARN]/*"
+    }
+  ]
 }
 ```
+
+> Please make sure that you UPDATE the resource **ARN** with the **ARN of the S3 bucket** you've created!
 
 # What exactly we will be doing
 
@@ -77,9 +81,9 @@ Then you'll need to create a CodeCommit repo on AWS. We need the CodeCommit repo
 aws codecommit create-repository --repository-name my-docker-repo --repository-description "My Docker Repo"
 ```
 
-Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP.  It'll be an empty repository first. Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
+Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. It'll be an empty repository first. (This CodeCommit will be used to host source codes which we will build into a Docker image.) Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
 
-- Unzip the source files. You'll need to **make sure that "src" folder and Dockerfile are in the same root directory**.
+- Unzip the source files. You'll need to **make sure that "src" folder and Dockerfile are in the same root directory in order for Docker build to work**.
 - Remove the zip file 
 - Download the Dockerfile & buildspec.yml 
 
@@ -89,7 +93,7 @@ Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. 
 2. Dockerfile
 3. buildspec.yml (This file isn't needed for Docker image however, it is required to CodeBuild)
 
-- Then you'll need to do `git init`, `git add -A`, `git commit -m "Your message"` and `git push`
+- Then you'll need to do `git init`, `git add -A`, `git commit -m "Your message"` and `git push` (This will upload your local files to  your CodeCommit repository)
 - All the above files should now be uploaded to your CodeCommit repo.
 
 > You can also download [shiftleft-binary.zip](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/shiftleft-binary.zip) for shiftleft executables for Windows,Linux and MacOs.
