@@ -12,7 +12,7 @@ NOTE: This tutorial is **not complete** yet and it is work in progress.
 
 * AWS CLI [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html).
 * Docker (If you want to test local Docker build)
-* [SHIFTLEF](https://github.com/dome9/shiftleft)
+* [SHIFTLEFT](https://github.com/dome9/shiftleft)
 
 Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services provided by **AWS ONLY**. However, CloudGuard can be integrated with any other automation tools that can create CICD pipeline.
 
