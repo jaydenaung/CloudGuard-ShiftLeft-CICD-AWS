@@ -469,6 +469,8 @@ Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/s
 
 **CONGRATULATIONS!!!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
 
+Happy DevSecOps-ing!
+Jayden Aung
 
 ## Issues
 
