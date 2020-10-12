@@ -114,6 +114,8 @@ Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basical
 
 **[IMPORTANT]** In the buildspec.yml, look for **#UPDATE** comments and replace the values with your own values accordingly.
 
+ALso in the buildspec.yml you will see that the SHIFTLEFT binary is downloaded from my own S3 website (https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft). It is a Linux x64 executable file and I uploaded it for the purpose of this lab. In your case, you can upload your own SHIFTLEFT binary to your S3 bucket or whichever can host the file. 
+
 
 ```
 version: 0.2  
