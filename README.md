@@ -108,7 +108,7 @@ Check out [How to generate CloudGuard API and API Secret](https://supportcenter.
 
 ***DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML (IF POSSIBLE)***
 
-It's easier to  hardcode CloudGuard API keys and secrets in the buildspecs.yml. But it is not in line with security best practices. (Think DevSecOps) 
+SHIFTLEFT requires CloudGuard API key and secrets, and we need to declare them in buildspec.yml. It's easier to hardcode CloudGuard API keys and secrets in the buildspecs.yml. But it is not in line with security best practices. (Think DevSecOps) 
 
 So here is what we are gonna do (The secure way):
 
@@ -122,6 +122,8 @@ So here is what we are gonna do (The secure way):
 2. Choose "Parameter Store"
 3. Create a parameter for "CHKP_CLOUDGUARD_ID", and key in the your CloudGuard API key. (Choose "String")
 4. Create a parameter for "CHKP_CLOUDGUARD_SECRET" and  key in the your CloudGuard Secret. (Choose "String)
+
+And buildspec.yml will instruct Codebuild to access these parameters required for SHIFTLEFT when in build stage. 
 
 > Optionally, you can choose "SecureString" in which chase the string will be encrypted using KMS keys from your account.
 
