@@ -106,6 +106,50 @@ SHIFTLEFT requires CloudGuard's API key and API secrets. In Build stage, we'll n
 
 Check out [How to generate CloudGuard API and API Secret](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk144514&partition=General&product=CloudGuard)
 
+## DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML (IF POSSIBLE)
+
+It's easier to  hardcode CloudGuard API keys and secrets in the buildspecs.yml. But it is not in line with security best practices in a typical DevSecOps architecture. 
+
+So here is what we are gonna do:
+
+* Create two AWS SSM Parameters for "CHKP_CLOUDGUARD_ID" and "CHKP_CLOUDGUARD_SECRET".
+*  Add "ssm:GetParameter" in-line policy to the IAM role that's used by CodeBuild.
+*  We'll instruct buildspec.yml to call the SSM parameters for CloudGuard API and Secrets (instead of hard-coded value) 
+
+### Create SSM Parameters 
+
+1. Go to AWS Management > "Systems Manager"
+2. Choose "Parameter Store"
+3. Create a parameter for "CHKP_CLOUDGUARD_ID", and key in the your CloudGuard API key. (Choose "String")
+4. Create a parameter for "CHKP_CLOUDGUARD_SECRET" and  key in the your CloudGuard Secret. (Choose "String)
+
+> Optionally, you can choose "SecureString" in which chase the string will be encrypted using KMS keys from your account.
+
+![header image](img/ssm-create.png)
+
+### Add in-line Permission to CodeBuild Role
+
+At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add the following in-line policy** to the CodeBuild role when it gets created when you configure CodeBuild project. This will allow CodeBuild to access to the SSM parameters that we've just created. 
+
+(Of course alternatively, you can create a Codebuild role in advance for you to use at the stage when you create the build project.)
+
+``` bash
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1603601503335",
+      "Action": [
+        "ssm:GetParameter"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+
+```
+
 ### S3 Bucket
 You'll also need to create an S3 bucket to upload and store a copy of SHIFTLEFT vulnerability scan result.
 
@@ -163,7 +207,7 @@ phases:
     - echo Saving Docker image 
     - docker save chkp-docker -o Your-DOCKER-IAMGE.tar
     # Start Scan
-    - echo Starting scan at `date`
+    - echo Starting scan on `date`
     # Update the saved tar file with your docker image name 
     - ./shiftleft image-scan -i Your-DOCKER-IAMGE.tar > result.txt || if [ "$?" = "6" ]; then exit 0; fi
      
@@ -208,6 +252,7 @@ In CodeBuild windows, do the following;
 8. Choose "Standard" & "Standard:4.0" (It's totally up to you to choose actually.)
 9. Check "Privileged ...." checkbox
 10. Choose an existing role or create a new service role.
+**(Add SSM:get-parameter in-line policy to this role!)**
 
 
 > Now, please take note that codebuild role requires permissions to access to S3 bucket and ECR.

@@ -17,10 +17,11 @@ phases:
   build: 
     commands: 
     - echo Downloading SHIFTLEFT
-    # UPDATE CLOUDGUARD API KEY
-    - export CHKP_CLOUDGUARD_ID=YOUR-CLOUDGUARD-ID
-    # UPDATE API SECRET
-    - export CHKP_CLOUDGUARD_SECRET=YOUR-SECRET
+
+    # You need to add get-parameter permission for CodeBuild role in order to access SSM parameters
+    - export CHKP_CLOUDGUARD_ID=$(aws ssm get-parameter --name "CHKP_CLOUDGUARD_ID" | jq -r '.Parameter.Value')
+    - export CHKP_CLOUDGUARD_SECRET=$(aws ssm get-parameter --name "CHKP_CLOUDGUARD_SECRET" | jq -r '.Parameter.Value')
+
     - wget https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft
     - chmod -R +x ./shiftleft
     - echo Build started on `date` 
@@ -33,17 +34,17 @@ phases:
     - echo Saving Docker image 
     - docker save cyberave-docker -o Your-DOCKER-IAMGE.tar
     # Start Scan
-    - echo Starting scan at `date`
+    - echo Starting scan on `date`
     # UPDATE the saved tar file with your docker image name 
     - ./shiftleft image-scan -i Your-DOCKER-IAMGE.tar > result.txt || if [ "$?" = "6" ]; then exit 0; fi
-    - echo Scan finished at `date`
+    - echo Scan finished on `date`
      
   post_build: 
     commands: 
     - echo Pushing image to repo
     # UPDATE the following push command with the URI of your own ECR repository
     - docker push ECR-URI-dkr.ecr.ap-southeast-1.amazonaws.com/YOUR-DOCKER-IAMGE:latest 
-    - echo Build completed at `date` 
+    - echo Build completed on `date` 
 
 artifacts: 
   files:
