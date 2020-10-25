@@ -140,7 +140,7 @@ At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add
     {
       "Sid": "Stmt1603607884407",
       "Action": [
-        "ssm:GetParameters"
+        "ssm:GetParameter"
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:ssm:ap-southeast-1:YOURACCOUNTNO:parameter/CHKP_CLOUDGUARD_ID"
@@ -148,7 +148,7 @@ At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add
     {
       "Sid": "Stmt1603607963982",
       "Action": [
-        "ssm:GetParameters"
+        "ssm:GetParameter"
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:ssm:ap-southeast-1:YOURACCOUNTNO:parameter/CHKP_CLOUDGUARD_SECRET"
