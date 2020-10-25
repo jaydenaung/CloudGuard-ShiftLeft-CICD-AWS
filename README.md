@@ -106,11 +106,11 @@ SHIFTLEFT requires CloudGuard's API key and API secrets. In Build stage, we'll n
 
 Check out [How to generate CloudGuard API and API Secret](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk144514&partition=General&product=CloudGuard)
 
-### DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML (IF POSSIBLE)
+***DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML (IF POSSIBLE)***
 
-It's easier to  hardcode CloudGuard API keys and secrets in the buildspecs.yml. But it is not in line with security best practices in a typical DevSecOps architecture. 
+It's easier to  hardcode CloudGuard API keys and secrets in the buildspecs.yml. But it is not in line with security best practices. (Think DevSecOps) 
 
-So here is what we are gonna do:
+So here is what we are gonna do (The secure way):
 
 * Create two AWS SSM Parameters for "CHKP_CLOUDGUARD_ID" and "CHKP_CLOUDGUARD_SECRET".
 *  Add "ssm:GetParameter" in-line policy to the IAM role that's used by CodeBuild.
