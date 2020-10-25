@@ -6,7 +6,7 @@ In this tutorial, I'll do a step-by-step walk-through of integrating CloudGuard 
 
 NOTE: This tutorial is **not complete** yet and it is work in progress.
 
-![header image](img/SHIFTLEFT-AWS.png)
+![header image](img/SHIFTLEFT-AWS-new.png)
 # Pre-requisites
  You need the following tools on your computer:
 
