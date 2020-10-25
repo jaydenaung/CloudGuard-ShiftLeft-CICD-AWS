@@ -112,7 +112,7 @@ It's easier to  hardcode CloudGuard API keys and secrets in the buildspecs.yml. 
 
 So here is what we are gonna do (The secure way):
 
-* Create two AWS SSM Parameters for "CHKP_CLOUDGUARD_ID" and "CHKP_CLOUDGUARD_SECRET".
+* Create two AWS Systems Manager Parameters (SSM) for "CHKP_CLOUDGUARD_ID" and "CHKP_CLOUDGUARD_SECRET".
 *  Add "ssm:GetParameter" in-line policy to the IAM role that's used by CodeBuild.
 *  We'll instruct buildspec.yml to call the SSM parameters for CloudGuard API and Secrets (instead of hard-coded value) 
 
@@ -127,9 +127,9 @@ So here is what we are gonna do (The secure way):
 
 ![header image](img/ssm-create.png)
 
-### Add in-line Permission to CodeBuild Role
+### Add an in-line policy to CodeBuild Role
 
-At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add the following in-line policy** to the CodeBuild role when it gets created when you configure CodeBuild project. This will allow CodeBuild to access to the SSM parameters that we've just created. 
+At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add the following in-line policy** to the CodeBuild role when it gets as part of CodeBuild project configuration. This will allow CodeBuild to access to the SSM parameters that we've just created. 
 
 (Of course alternatively, you can create a Codebuild role in advance for you to use at the stage when you create the build project.)
 
