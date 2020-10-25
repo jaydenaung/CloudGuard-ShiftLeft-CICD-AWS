@@ -100,13 +100,13 @@ Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. 
 
 [Check out the how SHIFTLEFT works and command line usage here.](https://github.com/dome9/shiftleft)
 
-### CLOUDGUARD API KEY AND SECRET
+## CLOUDGUARD API KEY AND SECRET
 
 SHIFTLEFT requires CloudGuard's API key and API secrets. In Build stage, we'll need to export it in buildspec.yml. You can generate CloudGuard API key and API secrets on CloudGuard console. 
 
 Check out [How to generate CloudGuard API and API Secret](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk144514&partition=General&product=CloudGuard)
 
-## DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML (IF POSSIBLE)
+### DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML (IF POSSIBLE)
 
 It's easier to  hardcode CloudGuard API keys and secrets in the buildspecs.yml. But it is not in line with security best practices in a typical DevSecOps architecture. 
 
