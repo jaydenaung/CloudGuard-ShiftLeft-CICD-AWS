@@ -138,17 +138,25 @@ At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "Stmt1603601503335",
+      "Sid": "Stmt1603607884407",
       "Action": [
-        "ssm:GetParameter"
+        "ssm:GetParameters"
       ],
       "Effect": "Allow",
-      "Resource": "*"
+      "Resource": "arn:aws:ssm:ap-southeast-1:YOURACCOUNTNO:parameter/CHKP_CLOUDGUARD_ID"
+    },
+    {
+      "Sid": "Stmt1603607963982",
+      "Action": [
+        "ssm:GetParameters"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:ssm:ap-southeast-1:YOURACCOUNTNO:parameter/CHKP_CLOUDGUARD_SECRET"
     }
   ]
 }
-
 ```
+> Update the ARN with the ARN of your CloudGuard API Key and Secret.
 
 ### S3 Bucket
 You'll also need to create an S3 bucket to upload and store a copy of SHIFTLEFT vulnerability scan result.
