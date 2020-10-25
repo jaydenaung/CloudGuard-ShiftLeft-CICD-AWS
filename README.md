@@ -156,7 +156,7 @@ At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add
   ]
 }
 ```
-> Update the ARN with the ARN of your CloudGuard API Key and Secret.
+> Update resource ARNs with the ARNs of your CloudGuard API Key and Secret. Execute ```get-parameter --name "CHKP_CLOUDGUARD_ID"``` to get the ARN.
 
 ### S3 Bucket
 You'll also need to create an S3 bucket to upload and store a copy of SHIFTLEFT vulnerability scan result.
