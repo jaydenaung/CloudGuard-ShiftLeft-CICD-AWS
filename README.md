@@ -190,10 +190,10 @@ phases:
   build: 
     commands: 
     - echo Downloading SHIFTLEFT
-    #UPDATE
-    - export CHKP_CLOUDGUARD_ID=YOUR-CLOUDGUARD-ID
-     # UPDATE
-    - export CHKP_CLOUDGUARD_SECRET=YOUR-SECRET
+    #This instructs CodeBuild to access and use SSM parameters that we've created fro CloudGuard API key and secret 
+    - export CHKP_CLOUDGUARD_ID=$(aws ssm get-parameter --name "CHKP_CLOUDGUARD_ID" | jq -r '.Parameter.Value')
+    - export CHKP_CLOUDGUARD_SECRET=$(aws ssm get-parameter --name "CHKP_CLOUDGUARD_SECRET" | jq -r '.Parameter.Value')
+
     #UPDATE the shifleft binary here
     - wget https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft
     - chmod -R +x ./shiftleft
