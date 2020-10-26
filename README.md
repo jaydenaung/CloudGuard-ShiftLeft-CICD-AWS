@@ -72,6 +72,7 @@ aws ecr create-repository --repository-name project-a/my-docker
 
 ![header image](img/ecr-uri.png)        
 
+---
 ## 2. Create a CodeCommit Repository
 
 Then you'll need to create a CodeCommit repo on AWS. We need the CodeCommit repo to store the "source" files that we will build into a docker image later in the tutorial. And the Docker image will then be uploaded to the ECR repo.
@@ -240,6 +241,7 @@ artifacts:
     - result.txt
 ```
 
+---
 
 # 3. Create a CodeBuild Project
 
@@ -468,7 +470,7 @@ Check out that the build has been compeleted.
 
 Finally, you can check and verify that SHIFTLEFT has been integrated into your build stage of the CICD pipeline.
 
-
+---
 ## 4. Check the SHIFTLEFT scan result
 
 On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "Artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT. 
@@ -534,7 +536,7 @@ Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/s
 
 **CONGRATULATIONS!!!** You've successfully integrated CloudGuard SHIFTLEFT with on AWS CodeBuild!
 
-
+---
 # 5. Integrate with AWS CodePipeline 
 
 You have successfully integrated SHIFTLEFT with AWS CodeBuild. If you want to take a step further, and integrate SHIFTLEFT with AWS CodePipeline, you can do so easily. You can create a CodePipeline, using your CodeCommit repo as source and Codebuild in the build stage (use the Codebuild project that you've created.). So every time you make changes to the docker image source files in CodeCommit repo, a pipeline execution in CodePipeline will be started, running a revision through every stage and action in the pipeline. While in build stage of the pipeline, SHIFTLEFT will be triggered to scan the docker image. In this way, a SHIFTLEFT assessment is triggered every time a new docker image is built, and you can fully integrate SHIFTLEFT into your CICD pipeline on AWS!
