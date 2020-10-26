@@ -57,6 +57,7 @@ In this tutorial, we'll be doing the followings;
 2. Create a CodeCommit Repo
 3. Create a Codebuild Project
 4. Test the Codebuild with SHIFTLEFT
+5. Integrate with AWS CodePipeline
 
 ## 1. Create an AWS ECR Repository
 First you'll need to create a ECR on AWS. Your docker image (after build stage) will be stored in the ECR repo.
@@ -532,9 +533,9 @@ Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/s
 **CONGRATULATIONS!!!** You've successfully integrated CloudGuard SHIFTLEFT with on AWS CodeBuild!
 
 
-## Integrate with AWS CodePipeline 
+# 5. Integrate with AWS CodePipeline 
 
-If you want to take a step further, and integrate SHIFTLEFT with AWS CodePipeline, you can do so easily. You can create a CodePipeline, using your CodeCommit repo as source and Codebuild in the build stage (use the Codebuild project that you've created.). So every time you make changes to the docker image source files in CodeCommit repo, a pipeline execution in CodePipeline will be started, running a revision through every stage and action in the pipeline. While in build stage of the pipeline, SHIFTLEFT will be triggered to scan the docker image. In this way, a SHIFTLEFT assessment is triggered every time a new docker image is built, and you can fully integrate SHIFTLEFT into your CICD pipeline on AWS!
+You have successfully integrated SHIFTLEFT with AWS CodeBuild. If you want to take a step further, and integrate SHIFTLEFT with AWS CodePipeline, you can do so easily. You can create a CodePipeline, using your CodeCommit repo as source and Codebuild in the build stage (use the Codebuild project that you've created.). So every time you make changes to the docker image source files in CodeCommit repo, a pipeline execution in CodePipeline will be started, running a revision through every stage and action in the pipeline. While in build stage of the pipeline, SHIFTLEFT will be triggered to scan the docker image. In this way, a SHIFTLEFT assessment is triggered every time a new docker image is built, and you can fully integrate SHIFTLEFT into your CICD pipeline on AWS!
 
 An easy and quick way to create a CodePipeline is using AWS CLI. You can download [my-codepipeline.json](my-codepipeline.json) from this Github repo which is a sample CodePipeline JSON file I've created for this lab. You can update the JSON file with your own values, and execute the following CLI.
 
