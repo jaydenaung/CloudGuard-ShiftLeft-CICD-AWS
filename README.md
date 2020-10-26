@@ -121,7 +121,7 @@ So here is what we are gonna do (The secure way):
 
 > Note: You can also use AWS Secrets Manager to store credentials.
 
-### Create SSM Parameters 
+### Create AWS SSM Parameters 
 
 1. Go to AWS Management > "Systems Manager"
 2. Choose "Parameter Store"
@@ -136,9 +136,11 @@ And buildspec.yml will instruct Codebuild to access these parameters required fo
 
 ### Add an in-line policy to CodeBuild Role
 
-At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add the following in-line policy** to the CodeBuild role when it gets as part of CodeBuild project configuration. This will allow CodeBuild to access to the SSM parameters that we've just created. 
+At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add the following in-line policy** to the CodeBuild role when it gets created as part of CodeBuild project configuration. This will allow CodeBuild to access to the AWS SSM parameters that we've just created. 
 
 (Of course alternatively, you can create a Codebuild role in advance for you to use at the stage when you create the build project.)
+
+Below is a sample in-line policy in JSON format.
 
 ``` bash
 {
