@@ -1,13 +1,13 @@
 # CloudGuard SHIFTLEFT integration with CICD pipeline on AWS
 
-Docker images often contain vulnerabilities that can allow an attacker to leverage when the application is at runtime - in both UAT/Test and production environments. It's crutial for DevOps engineers to ensure that the security is integrated into CICD Pipeline for your cloud native applications. Check Point's CloudGuard SHIFTLEFT is a security tool that can integrate into your CICD pipeline, and scan your containers for vulnerabilities. Shiftleft can also scan source codes and IaC for vulnerabilities and misconfigurations.
+Docker images often contain vulnerabilities that can allow an attacker to leverage when the application is at runtime - in UAT/Test and production environments. It's crucial for DevOps teams to ensure that the security is integrated into CICD Pipeline as early as possible when building your cloud native applications. Check Point's CloudGuard SHIFTLEFT is a security tool that can integrate into your CICD pipeline, and scan your containers for vulnerabilities. SHIFTLEFT can also scan application source codes and IaC such as Terraform for vulnerabilities and misconfigurations.
 
 In this tutorial, I'll do a step-by-step walk-through of integrating CloudGuard SHIFTLEFT into your CICD Pipeline on AWS. The integration will happen at the build stage. 
 
 NOTE: This tutorial is **not complete** yet and it is work in progress.
 
 ![header image](img/SHIFTLEFT-AWS-new.png)
-# Pre-requisites
+# Prerequisites
 
 ### Tools 
  You need the following tools on your computer:
@@ -55,11 +55,11 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 In this tutorial, we'll be doing the followings;
 
 1. Create an AWS ECR repo \
-(Yes if you'd like to follow along my ALL-AWS tutorial, you'll need to create a ECR repo which will store the docker image.)
+(Yes if you'd like to follow along my ALL-AWS tutorial, you'll need to create an ECR repo which will store the docker image.)
 2. Create a CodeCommit Repo
 3. Generate CloudGuard API Key and Secret
 4. CodeBuild Project Configuration
-5. Test the Codebuild with SHIFTLEFT
+5. Test the build with SHIFTLEFT
 6. Integrate with AWS CodePipeline
 
 ---
@@ -87,20 +87,20 @@ Then you'll need to create a CodeCommit repo on AWS. We need the CodeCommit repo
 aws codecommit create-repository --repository-name my-docker-repo --repository-description "My Docker Repo"
 ```
 
-Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. It'll be an empty repository first. (This CodeCommit will be used to host source codes which we will build into a Docker image.) Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
+Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. It'll be an empty repository first. (This CodeCommit will be used to host the source codes which we will use to build a Docker image.) Then you will need to download the source files (zip) into your local repo [here](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/src.zip) 
 
 - Unzip the source files. You'll need to **make sure that "src" folder and Dockerfile are in the same root directory in order for Docker build to work**.
 - Remove the zip file 
 - Download the Dockerfile & buildspec.yml 
 
-**So in your CodeCommit local dirctory, you should have the following folder and files**.
+**In your CodeCommit local directory, you should have the following folder and files**.
 
 1. src (directory where source codes are)
 2. Dockerfile
 3. buildspec.yml (This file isn't needed for Docker image however, it is required to CodeBuild)
 
 - Then you'll need to do `git init`, `git add -A`, `git commit -m "Your message"` and `git push` (This will upload your local files to  your CodeCommit repository)
-- All the above files should now be uploaded to your CodeCommit repo.
+- Above-mentioned files in your local directory should now be uploaded to your CodeCommit repo.
 
 > You can also download [shiftleft-binary.zip](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/shiftleft-binary.zip) for shiftleft executables for Windows,Linux and MacOs.
 
@@ -109,7 +109,7 @@ Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. 
 ---
 # 3. GENERATE CLOUDGUARD API KEY AND SECRET
 
-SHIFTLEFT requires CloudGuard's API key and API secrets in order to run  assessments. In Build stage, we'll need to export them into buildspec.yml securely. You can generate CloudGuard API key and API secrets on CloudGuard console. 
+SHIFTLEFT requires CloudGuard's API key and API secrets in order to run assessments. In Build stage, we'll need to export them into buildspec.yml securely. You can generate CloudGuard API key and API secrets on CloudGuard web console. 
 
 Check out [How to generate CloudGuard API and API Secret](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk144514&partition=General&product=CloudGuard)
 
@@ -297,9 +297,15 @@ And Finally:
 
 ![header image](img/artifacts.png)
 
-### START THE BUILD!
 
-Now your Codebuild project has been created. You can go to your CodeBuild Project, **"Start the Build"** and observe the build log and output.
+---
+# 5. Test the build with SHIFTLEFT
+
+### Start the build process
+
+Now your Codebuild project has been created. You can go to your CodeBuild Project, click on **"Start Build"** and observe the CodeBuild log and output.
+
+![header image](img/codebuild-start.png)
 
 ### CodeBuild Output
 
@@ -474,14 +480,12 @@ Build complete on Mon Oct 26 04:33:51 UTC 2020
 [Container] 2020/10/26 04:33:51 Found 1 file(s)
 
 ```
-Check out that the build has been compeleted.
+Check out that the build has been completed.
 
 ![header image](img/buildcomplete.png)
 
 Finally, you can check and verify that SHIFTLEFT has been integrated with CodeBuild, and runs an assessment on the docker image.
 
----
-## 5. Check the SHIFTLEFT scan result
 
 On AWS Console, go to "S3", and the S3 bucket that we've created for storing artifacts while configuring CodeBuild project. In the "output" folder, you should see "result.txt" which basically is the vulnerability scan report generated by SHIFTLEFT. 
 
