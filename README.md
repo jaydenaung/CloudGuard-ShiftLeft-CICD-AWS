@@ -528,14 +528,16 @@ Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/s
 
 ### Integrate with CodePipeline 
 
-You can create a CodePipeline, using your CodeCommit repo as source and Codebuild in the build stage. So every time you make changes to your docker source files in CodeCommit repo, a pipeline execution in CodePipeline will be started, which will then automatically trigger SHIFLEFT to scan the docker image while in build stage. In this way you can integrate SHIFTLEFT into your CICD pipeline on AWS!
+You can create a CodePipeline, using your CodeCommit repo as source and Codebuild in the build stage (use the Codebuild project that you've created.). So every time you make changes to the docker source files in CodeCommit repo, a pipeline execution in CodePipeline will be started, running a revision through every stage and action in the pipeline. And in build stage of the pipeline, SHIFTLEFT will be triggered to scan the docker image. In this way, a SHIFTLEFT assessment is triggered every time your docker image is updated at the source, and you can fully integrate SHIFTLEFT into your CICD pipeline on AWS!
 
-An easy and quick way to create a CodePipeline is using AWS CLI. You can download[my-codepipeline.json][#my-codepipeline.json] from this Github repo, update the JSON file with your own values, and execute the following.
+An easy and quick way to create a CodePipeline is using AWS CLI. You can download [my-codepipeline.json](my-codepipeline.json) from this Github repo, update the JSON file with your own values, and execute the following.
 
 
 ```bash
 aws codepipeline create-pipeline --cli-input-json file://my-codepipeline.json
 ```
+
+![header image](img/shiftleft-codepipeline.png)
 
 ---
 Happy DevSecOps-ing! \
