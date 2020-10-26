@@ -102,19 +102,19 @@ Then you'll need to do 'git clone your CodeCommit repo' via either SSH or HTTP. 
 
 ## CLOUDGUARD API KEY AND SECRET
 
-SHIFTLEFT requires CloudGuard's API key and API secrets. In Build stage, we'll need to export it in buildspec.yml. You can generate CloudGuard API key and API secrets on CloudGuard console. 
+SHIFTLEFT requires CloudGuard's API key and API secrets in order to run  assessments. In Build stage, we'll need to export them into buildspec.yml securely. You can generate CloudGuard API key and API secrets on CloudGuard console. 
 
 Check out [How to generate CloudGuard API and API Secret](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk144514&partition=General&product=CloudGuard)
 
-***DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML (IF POSSIBLE)***
+***[IMPORTANT] DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML IF POSSIBLE***
 
-SHIFTLEFT requires CloudGuard API key and secrets, and we need to declare them in buildspec.yml. It's easier to hardcode CloudGuard API keys and secrets in the buildspecs.yml. But it is not in line with security best practices. (Think DevSecOps) 
+CloudGuard API key and secret that you've just generated need to be declared in buildspec.yml for SHIFTLEFT to use as credentials. It's easier to just hard-code them in the buildspecs.yml in plain text. However, that is not in line with security best practices. You do not want these credentials to be clearly visible in buildspec.yml. (Think DevSecOps)
 
 So here is what we are gonna do (The secure way):
 
-* Create two AWS Systems Manager Parameters (SSM) for "CHKP_CLOUDGUARD_ID" and "CHKP_CLOUDGUARD_SECRET".
-*  Add "ssm:GetParameter" in-line policy to the IAM role that's used by CodeBuild.
-*  We'll instruct buildspec.yml to call the SSM parameters for CloudGuard API and Secrets (instead of hard-coded value) 
+* We'll store the CloudGuard API key and secret in AWS Systems Manager Parameter Store. We'll need to create two AWS SSM Parameters for "CHKP_CLOUDGUARD_ID" and "CHKP_CLOUDGUARD_SECRET".
+*  Then we'll add "ssm:GetParameter" in-line policy to the IAM role that's used by CodeBuild.
+*  We'll then instruct buildspec.yml to call the SSM parameters for CloudGuard API and Secrets (instead of hard-coded values).
 
 ### Create SSM Parameters 
 
@@ -524,9 +524,24 @@ Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/s
 
 **CONGRATULATIONS!!!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
 
-Happy DevSecOps-ing!
+## What else you can do (Not covered in detail in this tutorial)
+
+### Integrate with CodePipeline 
+
+You can create a CodePipeline, using your CodeCommit repo as source and Codebuild in the build stage. So every time you make changes to your docker source files in CodeCommit repo, a pipeline execution in CodePipeline will be started, which will then automatically trigger SHIFLEFT to scan the docker image while in build stage. In this way you can integrate SHIFTLEFT into your CICD pipeline on AWS!
+
+An easy and quick way to create a CodePipeline is using AWS CLI. You can download[my-codepipeline.json][#my-codepipeline.json] from this Github repo, update the JSON file with your own values, and execute the following.
+
+
+```bash
+aws codepipeline create-pipeline --cli-input-json file://my-codepipeline.json
+```
+
+---
+Happy DevSecOps-ing! \
 Jayden Aung
 
+---
 ## Issues
 
 1. One of the issues you might probably encounter in Build is the build stage might fail due to IAM insufficient permissions. Ensure that the IAM role has the sufficient permissions attached to it
