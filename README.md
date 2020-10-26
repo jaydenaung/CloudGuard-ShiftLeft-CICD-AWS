@@ -8,6 +8,8 @@ NOTE: This tutorial is **not complete** yet and it is work in progress.
 
 ![header image](img/SHIFTLEFT-AWS-new.png)
 # Pre-requisites
+
+### Tools 
  You need the following tools on your computer:
 
 * AWS CLI [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html).
@@ -23,9 +25,7 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 
 ### AWS IAM Roles needed for the following AWS services
 
-- The IAM role(s) will be created as part of creating a CodeBuild project. Please take note that the role used by CodeBulid requires permission to access to a number of AWS resources such as S3. 
-
-- For CodeBuild Role, two additional policies need to be attached to it on top of the IAM policies that were attached when the role was created.
+- The IAM role(s) will be created as part of creating a CodeBuild project. Please take note that the role used by CodeBuild requires permissions to access to a number of AWS resources such as S3. 
 
     1. AmazonEC2ContainerRegistryPowerUser 
     2. An Inline Policy that allows it to "PUT OBJECT" to S3 Bucket that you've created. This is for uploading scan result to S3. (See JSON below)
@@ -48,7 +48,7 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 
 > Please make sure that you UPDATE the resource **ARN** with the **ARN of the S3 bucket** you've created!
 
-3. Finally, you need to add an in-line policy for Codebuild to access CloudGuard credentials stored in AWS SSM parameter store. I'll explain in detail at [a later stage](#Add-an-in-line-policy-to-CodeBuild-Role). 
+3. Finally, you need to add another in-line policy for Codebuild to access CloudGuard credentials stored in AWS SSM parameter store. I'll explain in detail at [a later stage](#Add-an-in-line-policy-to-CodeBuild-Role). 
 
 # What exactly we will be doing
 
@@ -62,7 +62,8 @@ In this tutorial, we'll be doing the followings;
 5. Test the Codebuild with SHIFTLEFT
 6. Integrate with AWS CodePipeline
 
-## 1. Create an AWS ECR Repository
+---
+# 1. Create an AWS ECR Repository
 First you'll need to create a ECR on AWS. Your docker image (after build stage) will be stored in the ECR repo.
 
 You can create the ECR repo on AWS web console or you can just execute the following command.
@@ -76,9 +77,9 @@ aws ecr create-repository --repository-name project-a/my-docker
 ![header image](img/ecr-uri.png)        
 
 ---
-## 2. Create a CodeCommit Repository
+# 2. Create a CodeCommit Repository
 
-Then you'll need to create a CodeCommit repo on AWS. We need the CodeCommit repo to store the "source" files that we will build into a docker image later in the tutorial. And the Docker image will then be uploaded to the ECR repo.
+Then you'll need to create a CodeCommit repo on AWS. We need the CodeCommit repo to store the "source" files that we'll use to build a docker image later in the tutorial. And the Docker image will then be uploaded to the ECR repo.
 
  You can create a CodeCommit repo on AWS web console or you can just execute the following command.
 
@@ -130,8 +131,8 @@ So here is what we are gonna do (The secure way):
 
 1. Go to AWS Management > "Systems Manager"
 2. Choose "Parameter Store"
-3. Create a parameter for "CHKP_CLOUDGUARD_ID", and key in the your CloudGuard API key. (Choose "String")
-4. Create a parameter for "CHKP_CLOUDGUARD_SECRET" and  key in the your CloudGuard Secret. (Choose "String)
+3. Create a parameter for "CHKP_CLOUDGUARD_ID", and enter your CloudGuard API key. (Choose "String")
+4. Create a parameter for "CHKP_CLOUDGUARD_SECRET" and enter your CloudGuard Secret. (Choose "String)
 
 And buildspec.yml will instruct Codebuild to access these parameters required for SHIFTLEFT when in build stage. 
 
@@ -171,7 +172,7 @@ Below is a sample in-line policy in JSON format.
 }
 ```
 > Update resource ARNs with the ARNs of your CloudGuard API Key and Secret. Execute ```aws ssm get-parameter --name "CHKP_CLOUDGUARD_ID"``` and ```aws ssm get-parameter --name "CHKP_CLOUDGUARD_SECRET"``` to get the ARNs.
-
+---
 # 4. CodeBuild Project Configuration
 
 Before creating a CodeBuild project you'll first need to do the followings;
@@ -182,7 +183,7 @@ Before creating a CodeBuild project you'll first need to do the followings;
 ### S3 Bucket
 You'll also need to create an S3 bucket to upload and store a copy of SHIFTLEFT vulnerability scan result.
 
-A copy of scan result is uploaded to Check Point Infinity portal (for now). Hopefully, the scan result will be available on CloudGuard (Dome9) portal soon. ***I cannot commit on this***
+A copy of scan result is uploaded to Check Point Infinity portal (for now). Hopefully, the scan result will be available on CloudGuard (Dome9) portal soon. ***I cannot commit on this.***
 
 
 ```bash
@@ -192,11 +193,11 @@ aws s3 mb s3://Your-Bucket-Name
 
 ## [buildspec.yml](https://github.com/jaydenaung/CloudGuard-ShiftLeft-CICD-AWS/blob/main/buildspec.yml)
 
-Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basically, buildspec.yml will instruct AWS CodeBuild to automatically scan the docker image for vulnerability during build stage. And AWS CodeBuild will follow the steps declared in the buildspec.yml file. So this an **important** configuration file. 
+Buildspec.yml instructs CodeBuild in build stage in terms of what to do. Basically, buildspec.yml will instruct AWS CodeBuild to automatically scan the docker image for vulnerability during build stage. And AWS CodeBuild will follow the steps declared in the buildspec.yml file. So this is an **important** configuration file. 
 
 **[IMPORTANT]** In the buildspec.yml, look for **#UPDATE** comments and replace the values with your own values accordingly.
 
-Also in the buildspec.yml you will see that the SHIFTLEFT binary is downloaded from [my lab S3 bucket](https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft). It is a Linux x64 executable file and I uploaded it for the purpose of this lab. In your case, you can upload your own SHIFTLEFT binary to your S3 bucket or whichever can host the file. 
+In the buildspec.yml you will also see that the SHIFTLEFT binary will be downloaded from [my lab S3 bucket](https://jaydenstaticwebsite.s3-ap-southeast-1.amazonaws.com/download/shiftleft). It is a Linux x64 executable file and I uploaded it for the purpose of this lab. In your case, you can upload your own SHIFTLEFT binary to your S3 bucket or whichever repo that can host the file. 
 
 
 ```
@@ -283,7 +284,7 @@ In CodeBuild windows, do the following;
 **(Add SSM:get-parameter in-line policy to this role!)**
 
 
-> Now, please take note that codebuild role requires permissions to access to S3 bucket and ECR.
+> Now, please take note that codebuild role requires permissions to access to S3 bucket, ECR repo, and SSM parameter store.
 
 ![header image](img/codebuild-3.png)
 
@@ -302,7 +303,7 @@ Now your Codebuild project has been created. You can go to your CodeBuild Projec
 
 ### CodeBuild Output
 
-Below is the logs from Codebuild not everything just an excerpt from it - towards the end of the build.
+Below is an excerpt from the Codebuild output logs.
 
 ```bash
 See any operating system documentation about shared libraries for
@@ -477,12 +478,12 @@ Check out that the build has been compeleted.
 
 ![header image](img/buildcomplete.png)
 
-Finally, you can check and verify that SHIFTLEFT has been integrated into your build stage of the CICD pipeline.
+Finally, you can check and verify that SHIFTLEFT has been integrated with CodeBuild, and runs an assessment on the docker image.
 
 ---
 ## 5. Check the SHIFTLEFT scan result
 
-On AWS Console, go to "S3", and the S3 bucket that we've created, and defined as "Artifacts" in the CodeBuild stage. In the "output" folder, you should see "result.txt" which basically is the scan result of the SHIFTLEFT. 
+On AWS Console, go to "S3", and the S3 bucket that we've created for storing artifacts while configuring CodeBuild project. In the "output" folder, you should see "result.txt" which basically is the vulnerability scan report generated by SHIFTLEFT. 
 
 **NOTE**
 A copy of the result has been sent to Check Point Infinity Portal. If you have access to infinity portal, you can view the scan result on the portal. (Hopefully, this will be available on CloudGuard portal soon)
@@ -542,6 +543,8 @@ Otherwise, in result.txt, you can see a number of vulnerabilities found in the d
 			Last Modified: 2017-08-08T01:30:00Z
 Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/scan/image/35cad561b8968f02ac5a2eabcderdfdkfndkfndk 
 ```
+
+Now you can go through the scan result and analyze the vulnerabilities in docker image discovered by SHIFTLEFT.
 
 **CONGRATULATIONS!!!** You've successfully integrated CloudGuard SHIFTLEFT with on AWS CodeBuild!
 
