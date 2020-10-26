@@ -108,13 +108,17 @@ Check out [How to generate CloudGuard API and API Secret](https://supportcenter.
 
 ***[IMPORTANT] DO NOT HARDCODE YOUR API KEYS AND SECRETS IN BUILDSPEC.YML IF POSSIBLE***
 
-CloudGuard API key and secret that you've just generated need to be declared in buildspec.yml for SHIFTLEFT to use as credentials. It's easier to just hard-code them in the buildspecs.yml in plain text. However, that is not in line with security best practices. You do not want these credentials to be clearly visible in buildspec.yml. (Think DevSecOps)
+CloudGuard API key and secret that you've just generated need to be declared in buildspec.yml and exported as variables for SHIFTLEFT to use as credentials. It's easier to just hard-code them in the buildspecs.yml in plain text. However, that is not in line with security best practices. You do not want these credentials to be clearly visible in buildspec.yml. (Think DevSecOps)
 
 So here is what we are gonna do (The secure way):
 
-* We'll store the CloudGuard API key and secret in AWS Systems Manager Parameter Store. We'll need to create two AWS SSM Parameters for "CHKP_CLOUDGUARD_ID" and "CHKP_CLOUDGUARD_SECRET".
+* We'll store your CloudGuard API key and secret in AWS Systems Manager Parameter Store. We'll need to create two AWS SSM Parameters for "CHKP_CLOUDGUARD_ID" and "CHKP_CLOUDGUARD_SECRET".
+
 *  Then we'll add "ssm:GetParameter" in-line policy to the IAM role that's used by CodeBuild.
-*  We'll then instruct buildspec.yml to call the SSM parameters for CloudGuard API and Secrets (instead of hard-coded values).
+
+*  We'll then embed a couple of commands in buildspec.yml which calls AWS API to access SSM parameters for CloudGuard API key and secret (instead embedding of hard-coded values).
+
+> Note: You can also use AWS Secrets Manager to store credentials.
 
 ### Create SSM Parameters 
 
@@ -441,15 +445,18 @@ ec64f555d498: Layer already exists
 0d678d51888b: Pushed
 latest: digest: sha256:a46642efce16bbed3015725bfd40cbabb2115529ceb0e0a0430ca44b74f8453f size: 5740
 
-[Container] 2020/10/09 08:14:29 Phase complete: POST_BUILD State: SUCCEEDED
-[Container] 2020/10/09 08:14:29 Phase context status code:  Message: 
-[Container] 2020/10/09 08:14:29 Expanding base directory path: .
-[Container] 2020/10/09 08:14:29 Assembling file list
-[Container] 2020/10/09 08:14:29 Expanding .
-[Container] 2020/10/09 08:14:29 Expanding file paths for base directory .
-[Container] 2020/10/09 08:14:29 Assembling file list
-[Container] 2020/10/09 08:14:29 Expanding result.txt
-[Container] 2020/10/09 08:14:29 Found 1 file(s)
+[Container] 2020/10/26 04:33:51 Running command echo Build complete on `date`
+Build complete on Mon Oct 26 04:33:51 UTC 2020
+
+[Container] 2020/10/26 04:33:51 Phase complete: POST_BUILD State: SUCCEEDED
+[Container] 2020/10/26 04:33:51 Phase context status code:  Message: 
+[Container] 2020/10/26 04:33:51 Expanding base directory path: .
+[Container] 2020/10/26 04:33:51 Assembling file list
+[Container] 2020/10/26 04:33:51 Expanding .
+[Container] 2020/10/26 04:33:51 Expanding file paths for base directory .
+[Container] 2020/10/26 04:33:51 Assembling file list
+[Container] 2020/10/26 04:33:51 Expanding result.txt
+[Container] 2020/10/26 04:33:51 Found 1 file(s)
 
 ```
 Check out that the build has been compeleted.
