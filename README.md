@@ -48,6 +48,8 @@ Note: This is an **ALL-AWS** tutorial which means we'll be using CICD services p
 
 > Please make sure that you UPDATE the resource **ARN** with the **ARN of the S3 bucket** you've created!
 
+3. Finally, you need to add an in-line policy for Codebuild to access CloudGuard credentials stored in AWS SSM parameter store. I'll explain in detail at [a later stage](#Add-an-in-line-policy-to-CodeBuild-Role). 
+
 # What exactly we will be doing
 
 In this tutorial, we'll be doing the followings;
