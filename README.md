@@ -522,31 +522,33 @@ Otherwise, in result.txt, you can see a number of vulnerabilities found in the d
 Please see full analysis: https://portal.checkpoint.com/Dashboard/SourceGuard#/scan/image/35cad561b8968f02ac5a2eabcderdfdkfndkfndk 
 ```
 
-**CONGRATULATIONS!!!** You've successfully integrated CloudGuard SHIFTLEFT into CICD pipeline on AWS!
+**CONGRATULATIONS!!!** You've successfully integrated CloudGuard SHIFTLEFT with on AWS CodeBuild!
 
-## What else you can do (Not covered in detail in this tutorial)
 
-### Integrate with CodePipeline 
+## Integrate with AWS CodePipeline 
 
-You can create a CodePipeline, using your CodeCommit repo as source and Codebuild in the build stage (use the Codebuild project that you've created.). So every time you make changes to the docker source files in CodeCommit repo, a pipeline execution in CodePipeline will be started, running a revision through every stage and action in the pipeline. And in build stage of the pipeline, SHIFTLEFT will be triggered to scan the docker image. In this way, a SHIFTLEFT assessment is triggered every time your docker image is updated at the source, and you can fully integrate SHIFTLEFT into your CICD pipeline on AWS!
+If you want to take a step further, and integrate SHIFTLEFT with AWS CodePipeline, you can do so easily. You can create a CodePipeline, using your CodeCommit repo as source and Codebuild in the build stage (use the Codebuild project that you've created.). So every time you make changes to the docker image source files in CodeCommit repo, a pipeline execution in CodePipeline will be started, running a revision through every stage and action in the pipeline. While in build stage of the pipeline, SHIFTLEFT will be triggered to scan the docker image. In this way, a SHIFTLEFT assessment is triggered every time a new docker image is built, and you can fully integrate SHIFTLEFT into your CICD pipeline on AWS!
 
-An easy and quick way to create a CodePipeline is using AWS CLI. You can download [my-codepipeline.json](my-codepipeline.json) from this Github repo, update the JSON file with your own values, and execute the following.
+An easy and quick way to create a CodePipeline is using AWS CLI. You can download [my-codepipeline.json](my-codepipeline.json) from this Github repo which is a sample CodePipeline JSON file I've created for this lab. You can update the JSON file with your own values, and execute the following CLI.
 
 
 ```bash
 aws codepipeline create-pipeline --cli-input-json file://my-codepipeline.json
 ```
+This will basically create a CodePipeline!
+
 
 ![header image](img/shiftleft-codepipeline.png)
 
----
+Once the CodePipeline is set up, you can observe events in each stage of pipeline execution once it's started. You can also start the pipeline execution by making changes to the source code in the CodeCommit repo (followed by committing the code using git commands). Only this time, your docker image will be scanned for vulnerabilities by CloudGuard SHIFTLEFT every time a new docker image is built. 
+
 Happy DevSecOps-ing! \
 Jayden Aung
 
 ---
 ## Issues
 
-1. One of the issues you might probably encounter in Build is the build stage might fail due to IAM insufficient permissions. Ensure that the IAM role has the sufficient permissions attached to it
+1. One of the issues you might probably encounter in Build is the build stage might fail due to IAM insufficient permissions. Ensure that **the CodeBuild IAM role** has the sufficient permissions attached to it.
  
 
 ![header image](img/cloudguard.png) 
