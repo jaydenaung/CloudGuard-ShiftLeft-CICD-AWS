@@ -574,9 +574,15 @@ Happy DevSecOps-ing! \
 Jayden Aung
 
 ---
-## Issues
+## Things to take note
 
 1. One of the issues you might probably encounter in Build is the build stage might fail due to IAM insufficient permissions. Ensure that **the CodeBuild IAM role** has the sufficient permissions attached to it.
+
+2. Once CodePipeline has been set up, the artifact (result.txt) will be uploaded to CodePipeline's artifact S3, rather than CodeBuild's artifact S3 bucket. So if you still want to copy the scan result to the CodeBuild's artifact store S3 bucket, please add the following command to the "buildspec.yml".
+
+``` bash
+aws s3 cp result.txt s3://your-codebuild-artifacts-s3-bucket/result.txt
+```
  
 
 ![header image](img/cloudguard.png) 
