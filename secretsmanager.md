@@ -34,7 +34,7 @@ abcd1234
 
 3. Export variables in [buildspec.yml](buildspec.yml)
 
-Then you'll need to export the values int he [buildspec.yml](buildspec.yml). CloudGuard will use the API key and secrets stored in the AWS Secrets Manager when running assessments. 
+Then you'll need to export the commands in the [buildspec.yml](buildspec.yml) as variables. CloudGuard will use the API key and secrets stored in the AWS Secrets Manager when running assessments. 
 
 ```
 export CHKP_CLOUDGUARD_ID=$(aws secretsmanager get-secret-value --secret-id cloudguard-api-1 | jq -r '.SecretString')
