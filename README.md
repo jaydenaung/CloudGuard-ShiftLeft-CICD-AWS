@@ -138,6 +138,8 @@ And buildspec.yml will instruct Codebuild to access these parameters required fo
 
 > Optionally, you can choose "SecureString" in which chase the string will be encrypted using KMS keys from your account.
 
+> **Note: If you're using AWS Secrets Manager to store credentials, [you can store CloudGuard API Key and Secret in Secrets Manager](secretsmanager.md) as well.**
+
 ![header image](img/ssm-create.png)
 
 ### Add an in-line policy to CodeBuild Role
