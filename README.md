@@ -138,10 +138,14 @@ And buildspec.yml will instruct Codebuild to access these parameters required fo
 
 > Optionally, you can choose "SecureString" in which chase the string will be encrypted using KMS keys from your account.
 
-> **Note: If you're using AWS Secrets Manager to store credentials, [you can store CloudGuard API Key and Secret in Secrets Manager](secretsmanager.md) as well.**
-
 ![header image](img/ssm-create.png)
 
+--- 
+### Using AWS Secrets Manager to store CloudGuard API key and Secret 
+
+In addition to storing API keys and secrets in AWS SSM, you can store CloudGuard API Key and Secret in Secrets Manager. Please check out [How To Store CloudGuard API Key and Secret in Secrets Manager](secretsmanager.md) as well.
+
+---
 ### Add an in-line policy to CodeBuild Role
 
 At this stage, Codebuild IAM role is not yet created. So, **Just Remember to add the following in-line policy** to the CodeBuild role when it gets created as part of CodeBuild project configuration. This will allow CodeBuild to access to the AWS SSM parameters that we've just created. 
